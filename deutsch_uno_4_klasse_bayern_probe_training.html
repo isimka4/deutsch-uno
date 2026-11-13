@@ -1,0 +1,2536 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deutsch-UNO • 4. Klasse Bayern Probe-Trainer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-display: 'Fredoka', sans-serif;
+      --font-sans: 'Inter', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: linear-gradient(155deg, #fdfbf7 0%, #f1f7fd 48%, #f8fafc 100%);
+      color: #0f172a;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    .font-display {
+      font-family: var(--font-display);
+    }
+
+    /* Subtle sunlit notebook & Bavarian diamond pattern overlay */
+    .table-felt {
+      background-image:
+        radial-gradient(rgba(2, 132, 199, 0.08) 1.2px, transparent 0),
+        radial-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 0);
+      background-size: 26px 26px;
+      background-position: 0 0, 13px 13px;
+    }
+
+    /* UNO Card Styling */
+    .uno-card {
+      position: relative;
+      border-radius: 14px;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.16), inset 0 1px 1px rgba(255, 255, 255, 0.65);
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, filter 0.2s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .uno-card-playable:hover {
+      transform: translateY(-16px) scale(1.06);
+      box-shadow: 0 16px 28px rgba(15, 23, 42, 0.24), 0 0 0 3px rgba(245, 158, 11, 0.75);
+      z-index: 30;
+    }
+
+    .uno-card-disabled {
+      filter: opacity(0.58) saturate(0.75);
+      cursor: not-allowed;
+    }
+
+    .uno-oval {
+      position: absolute;
+      inset: 14% 10%;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 50%;
+      transform: rotate(-22deg);
+      box-shadow: inset 0 2px 6px rgba(15, 23, 42, 0.12);
+    }
+
+    /* Color themes */
+    .card-red {
+      background: linear-gradient(145deg, #f43f5e 0%, #e11d48 100%);
+      border: 3px solid #ffe4e6;
+    }
+    .card-blue {
+      background: linear-gradient(145deg, #0ea5e9 0%, #0284c7 100%);
+      border: 3px solid #e0f2fe;
+    }
+    .card-green {
+      background: linear-gradient(145deg, #22c55e 0%, #16a34a 100%);
+      border: 3px solid #dcfce7;
+    }
+    .card-yellow {
+      background: linear-gradient(145deg, #fbbf24 0%, #f59e0b 100%);
+      border: 3px solid #fef3c7;
+    }
+    .card-wild {
+      background: conic-gradient(from 45deg, #e11d48 0deg 90deg, #0284c7 90deg 180deg, #16a34a 180deg 270deg, #f59e0b 270deg 360deg);
+      border: 3px solid #ffffff;
+    }
+
+    /* Card back */
+    .card-back {
+      background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%);
+      border: 3px solid #0284c7;
+    }
+    .card-back-inner {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border-radius: 50%;
+      transform: rotate(-24deg);
+      border: 2px solid #fbbf24;
+    }
+
+    /* Animations */
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.65); }
+      50% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+    }
+    .animate-pulse-glow {
+      animation: pulseGlow 1.6s infinite;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.88) translateY(12px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .animate-pop {
+      animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(226, 232, 240, 0.65);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.65);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.85);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col table-felt text-slate-900">
+
+  <!-- TOP HEADER BAR -->
+  <header class="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2 z-40 shadow-sm">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-blue-700 flex items-center justify-center shadow-sm border border-sky-200 font-display font-bold text-white text-lg">
+        U
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-display font-bold text-base sm:text-lg tracking-wide text-slate-900 leading-none">
+            Deutsch-UNO <span class="text-sky-600">Bayern</span>
+          </h1>
+          <span class="hidden sm:inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+            4. Klasse • LehrplanPLUS
+          </span>
+        </div>
+        <p class="text-[11px] text-slate-500 hidden md:block">Komplett-Training für die Deutsch-Probe</p>
+      </div>
+    </div>
+
+    <!-- Live Score / Stats Pill -->
+    <div id="headerStats" class="hidden flex items-center gap-2 sm:gap-3 text-xs">
+      <div class="bg-slate-50 border border-slate-200 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-xs" title="Richtig beantwortete Probe-Fragen">
+        <span class="text-emerald-600 font-bold">✓</span>
+        <span id="statCorrect" class="font-bold text-emerald-700">0</span>
+        <span class="text-slate-400">/</span>
+        <span id="statTotal" class="font-semibold text-slate-700">0</span>
+        <span class="hidden sm:inline text-slate-500">Fragen</span>
+      </div>
+      <div id="activeColorBadge" class="px-3 py-1.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-xs border border-white/40 flex items-center gap-1.5 text-white">
+        <span class="w-2.5 h-2.5 rounded-full bg-white"></span>
+        <span id="activeColorText">Farbe</span>
+      </div>
+    </div>
+
+    <!-- Action Controls -->
+    <div class="flex items-center gap-1.5 sm:gap-2">
+      <button id="btnRules" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition flex items-center gap-1">
+        <span>📖</span><span class="hidden sm:inline">Regeln & Themen</span>
+      </button>
+      <button id="btnReport" class="hidden px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-semibold border border-amber-300 transition flex items-center gap-1">
+        <span>🎓</span><span class="hidden sm:inline">Probe-Stand</span>
+      </button>
+      <button id="btnSound" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs border border-slate-200 transition" title="Ton an/aus">
+        🔊
+      </button>
+      <button id="btnNewGame" class="px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold border border-rose-200 transition">
+        Neu
+      </button>
+    </div>
+  </header>
+
+  <!-- START / SETUP MODAL OVERLAY -->
+  <div id="setupScreen" class="flex-1 flex items-center justify-center p-4 z-30">
+    <div class="max-w-3xl w-full bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-3xl shadow-xl shadow-slate-200/70 p-5 sm:p-8 animate-pop">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-xs font-bold mb-3">
+          <span>🥨</span> Grundschule Bayern • 4. Jahrgangsstufe • Alle Lernbereiche
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+          Fit für die <span class="text-sky-600">Deutsch-Probe!</span>
+        </h2>
+        <p class="text-slate-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">
+          Spiele taktisches 1-gegen-1 UNO im direkten Duell! Jede Karte fordert dein Wissen aus dem gesamten 4.-Klass-Stoff heraus – wer falsch antwortet, zieht Strafkarten!
+        </p>
+      </div>
+
+      <!-- 4 Curriculum Categories Legend -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-6">
+        <div class="rounded-2xl bg-rose-50 border border-rose-200 p-3">
+          <div class="flex items-center gap-1.5 font-bold text-rose-700 text-xs uppercase tracking-wider">
+            <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> Rot • Richtig schreiben
+          </div>
+          <p class="text-[11px] text-slate-600 mt-1 leading-snug">ck/tz, ie/ih, ä/äu, Auslautverhärtung, Nominalisierung, wörtliche Rede</p>
+        </div>
+        <div class="rounded-2xl bg-sky-50 border border-sky-200 p-3">
+          <div class="flex items-center gap-1.5 font-bold text-sky-700 text-xs uppercase tracking-wider">
+            <span class="w-3 h-3 rounded-full bg-sky-600 inline-block"></span> Blau • Grammatik
+          </div>
+          <p class="text-[11px] text-slate-600 mt-1 leading-snug">Wortarten, 4 Zeitformen, Satzglieder, 4 Fälle, Steigerung, Wortfamilien</p>
+        </div>
+        <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-3">
+          <div class="flex items-center gap-1.5 font-bold text-emerald-700 text-xs uppercase tracking-wider">
+            <span class="w-3 h-3 rounded-full bg-emerald-600 inline-block"></span> Grün • Lesen
+          </div>
+          <p class="text-[11px] text-slate-600 mt-1 leading-snug">Lesetexte genau prüfen, Textsorten, Sprichwörter & Redewendungen</p>
+        </div>
+        <div class="rounded-2xl bg-amber-50 border border-amber-200 p-3">
+          <div class="flex items-center gap-1.5 font-bold text-amber-800 text-xs uppercase tracking-wider">
+            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> Gelb • Texte & Wörter
+          </div>
+          <p class="text-[11px] text-slate-600 mt-1 leading-snug">Treffende Verben, Satzanfänge, Bindewörter, Synonyme & Erzählaufbau</p>
+        </div>
+      </div>
+
+      <!-- Game Length & Opponent Setup -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
+          <label class="block text-xs font-bold uppercase tracking-wider text-amber-700 mb-2">
+            1. Spieldauer & Kartenanzahl
+          </label>
+          <div class="space-y-2" id="modeSelector">
+            <button type="button" data-cards="7" class="mode-btn w-full text-left px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 transition flex items-center justify-between">
+              <div>
+                <div class="font-bold text-sm text-slate-800">Schnell-Check (7 Karten)</div>
+                <div class="text-[11px] text-slate-500">Kompakte Runde für zwischendurch</div>
+              </div>
+              <span class="text-xs font-bold text-slate-500">~10 Min.</span>
+            </button>
+            <button type="button" data-cards="10" class="mode-btn w-full text-left px-3.5 py-2.5 rounded-xl border-2 border-amber-500 bg-amber-50 transition flex items-center justify-between shadow-xs">
+              <div>
+                <div class="font-bold text-sm text-amber-900">Probe-Profi (10 Karten) ★ Empfohlen</div>
+                <div class="text-[11px] text-amber-800/80">Längere Partie mit allen Sonderkarten & Kontern</div>
+              </div>
+              <span class="text-xs font-bold text-amber-700">~18 Min.</span>
+            </button>
+            <button type="button" data-cards="13" class="mode-btn w-full text-left px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 transition flex items-center justify-between">
+              <div>
+                <div class="font-bold text-sm text-slate-800">Großer Probe-Marathon (13 Karten)</div>
+                <div class="text-[11px] text-slate-500">Intensive Wiederholung mit vielen Wendungen</div>
+              </div>
+              <span class="text-xs font-bold text-slate-500">~25 Min.</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 flex flex-col justify-between">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-sky-700 mb-2">
+              2. Dein Gegner im 1-gegen-1 Duell
+            </label>
+            <div class="grid grid-cols-2 gap-2 mb-4" id="opponentSelector">
+              <button type="button" data-opponent-id="ai_lena" class="opp-btn px-3 py-2.5 rounded-xl border-2 border-sky-500 bg-sky-50 text-center transition shadow-xs">
+                <div class="text-lg leading-none mb-1">👧</div>
+                <div class="font-bold text-sm text-sky-900">Lena ★</div>
+                <div class="text-[11px] text-sky-700">4. Klasse • Mittel</div>
+              </button>
+              <button type="button" data-opponent-id="ai_teacher" class="opp-btn px-3 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-center transition">
+                <div class="text-lg leading-none mb-1">👨‍🏫</div>
+                <div class="font-bold text-sm text-slate-800">Herr Müller</div>
+                <div class="text-[11px] text-slate-500">Klassenlehrer • Profi</div>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl p-3 border border-slate-200 text-xs text-slate-600 space-y-1">
+            <div class="font-bold text-slate-900 flex items-center gap-1.5">
+              <span>⚡</span> 1-gegen-1 Bayern-Duellregeln:
+            </div>
+            <p>• <span class="text-amber-700 font-semibold">+2 & +4 Konter:</span> Mit passender Karte & richtiger Antwort zurückschicken!</p>
+            <p>• <span class="text-sky-700 font-semibold">Pause (⊘) & Richtung (⇄):</span> Im Duell bist du sofort noch einmal dran!</p>
+            <p>• <span class="text-rose-700 font-semibold">Tausch-Karte (⇄👤):</span> Tauscht direkt eure beiden Handkarten!</p>
+          </div>
+        </div>
+      </div>
+
+      <button id="btnStartGame" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 hover:from-amber-300 hover:to-rose-400 text-white font-display font-bold text-xl tracking-wide shadow-lg shadow-orange-500/25 transition transform hover:scale-[1.01] active:scale-[0.99]">
+        🎮 Deutsch-UNO starten!
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN GAME TABLE -->
+  <main id="gameBoard" class="hidden flex-1 flex flex-col justify-between max-w-6xl w-full mx-auto px-2 sm:px-4 py-2 sm:py-3 gap-2">
+
+    <!-- SINGLE AI OPPONENT HEADER (1v1 HEAD-TO-HEAD) -->
+    <section id="opponentsContainer" class="flex justify-center">
+      <!-- Populated dynamically -->
+    </section>
+
+    <!-- CENTER ARENA: DRAW PILE, DISCARD PILE, STATUS BANNER & UNO BUTTON -->
+    <section class="flex-1 flex flex-col items-center justify-center my-1 relative">
+      <!-- Turn & Event Banner -->
+      <div id="turnBanner" class="mb-3 px-4 py-2.5 rounded-2xl bg-white/95 border border-slate-200 shadow-md text-center max-w-lg w-full transition-all">
+        <div class="flex items-center justify-center gap-2">
+          <span id="directionIndicator" class="text-sky-600 font-bold text-base" title="Spielrichtung">↻</span>
+          <span id="turnText" class="font-display font-bold text-sm sm:text-base text-slate-900">Du bist am Zug!</span>
+        </div>
+        <p id="subTurnText" class="text-xs text-slate-600 mt-0.5">Wähle eine passende Karte oder ziehe vom Stapel.</p>
+      </div>
+
+      <!-- Piles & UNO Button -->
+      <div class="flex items-center justify-center gap-4 sm:gap-8 my-1">
+        <!-- Draw Pile -->
+        <div class="flex flex-col items-center">
+          <button id="drawPileBtn" class="uno-card card-back w-24 h-36 sm:w-28 sm:h-40 flex items-center justify-center group relative" title="Karte ziehen">
+            <div class="card-back-inner w-16 h-24 sm:w-20 sm:h-28 flex items-center justify-center shadow-inner">
+              <span class="font-display font-bold text-amber-300 text-lg sm:text-xl tracking-tight drop-shadow">UNO</span>
+            </div>
+            <span id="drawCountBadge" class="absolute -bottom-2 -right-2 bg-white text-slate-800 border border-slate-300 text-[11px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+              80
+            </span>
+          </button>
+          <span class="text-[11px] font-semibold text-slate-600 mt-2">Ziehstapel</span>
+        </div>
+
+        <!-- Pending Stack Penalty Indicator (when +2/+4 chain is active) -->
+        <div id="stackPenaltyBox" class="hidden flex flex-col items-center justify-center bg-rose-600 border-2 border-rose-200 rounded-2xl px-3 py-2 shadow-lg animate-bounce">
+          <span class="text-[10px] uppercase font-extrabold tracking-wider text-rose-100">Straf-Stapel</span>
+          <span id="stackPenaltyCount" class="font-display font-bold text-2xl text-white">+2</span>
+          <span class="text-[10px] text-rose-100">Kontern oder ziehen!</span>
+        </div>
+
+        <!-- Discard Pile -->
+        <div class="flex flex-col items-center">
+          <div id="discardPileSlot" class="w-24 h-36 sm:w-28 sm:h-40 flex items-center justify-center relative">
+            <!-- Top card rendered here -->
+          </div>
+          <span id="discardCategoryLabel" class="text-[11px] font-bold text-slate-700 mt-2">Ablagestapel</span>
+        </div>
+
+        <!-- UNO Shout Button -->
+        <div class="flex flex-col items-center">
+          <button id="btnUnoShout" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-rose-500 via-red-600 to-amber-500 border-4 border-white shadow-lg shadow-rose-500/25 flex flex-col items-center justify-center transform transition hover:scale-105 active:scale-95">
+            <span class="font-display font-bold text-white text-xl sm:text-2xl tracking-wider drop-shadow">UNO!</span>
+            <span id="unoStatusHint" class="text-[9px] font-bold uppercase tracking-wider text-amber-100 mt-0.5">Rufen</span>
+          </button>
+          <span class="text-[11px] font-semibold text-slate-600 mt-2">Bei 1 Karte</span>
+        </div>
+      </div>
+
+      <!-- Recent Activity Log Strip -->
+      <div id="logStrip" class="mt-2 px-3.5 py-1 rounded-full bg-white/90 border border-slate-200 shadow-xs text-[11px] font-medium text-slate-700 max-w-md truncate text-center">
+        Willkommen zur Deutsch-Probe! Viel Erfolg!
+      </div>
+    </section>
+
+    <!-- PLAYER HAND AREA -->
+    <section class="bg-white/95 backdrop-blur-md border border-slate-200 rounded-3xl p-3 sm:p-4 shadow-lg shadow-slate-200/70">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-2 px-1">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🎒</span>
+          <span class="font-display font-bold text-sm sm:text-base text-slate-900">Deine Handkarten</span>
+          <span id="playerCardCount" class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold">10</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btnSortHand" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition">
+            ⇅ Sortieren
+          </button>
+          <button id="btnDrawCardAction" class="px-3 py-1 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-xs transition">
+            + Karte ziehen
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable / Wrapped Card Fan -->
+      <div id="playerHandContainer" class="flex items-center gap-2 sm:gap-3 overflow-x-auto pt-4 pb-2 px-2 min-h-[155px] sm:min-h-[175px]">
+        <!-- Player cards injected here -->
+      </div>
+    </section>
+  </main>
+
+  <!-- QUESTION / PROBE CHALLENGE MODAL -->
+  <div id="questionModal" class="hidden fixed inset-0 bg-slate-900/45 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-5">
+    <div class="max-w-2xl w-full bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden animate-pop flex flex-col max-h-[92vh]">
+      <!-- Modal Header -->
+      <div id="qModalHeader" class="px-5 py-3.5 bg-gradient-to-r from-sky-600 to-blue-700 flex items-center justify-between border-b border-black/10">
+        <div class="flex items-center gap-2">
+          <span id="qCategoryIcon" class="text-xl">📘</span>
+          <div>
+            <div id="qCategoryBadge" class="text-xs font-extrabold uppercase tracking-wider text-white">Blau • Grammatik</div>
+            <div id="qSubtopicBadge" class="text-[11px] text-white/90">Satzglieder bestimmen</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <span id="qPurposeBadge" class="px-2.5 py-1 rounded-full bg-white/20 text-white text-xs font-bold border border-white/30">
+            Karte ausspielen
+          </span>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4 bg-white">
+        <!-- Optional Reading Passage Box (for Grün / Lesen) -->
+        <div id="qReadingBox" class="hidden bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-sm text-emerald-950 leading-relaxed">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 mb-1">📖 Lese-Text (genau lesen!):</div>
+          <p id="qReadingText"></p>
+        </div>
+
+        <!-- Question Prompt -->
+        <div>
+          <h3 id="qPromptText" class="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+            Fragetext erscheint hier...
+          </h3>
+          <p id="qHintText" class="hidden text-xs text-amber-700 font-medium mt-1.5 italic"></p>
+        </div>
+
+        <!-- Interactive Answer Area (Multiple Choice OR Word-Click Tokens) -->
+        <div id="qOptionsContainer" class="grid grid-cols-1 gap-2.5">
+          <!-- Options injected dynamically -->
+        </div>
+
+        <!-- Feedback Box (shown after answering) -->
+        <div id="qFeedbackBox" class="hidden rounded-2xl p-4 border transition-all">
+          <div class="flex items-start gap-3">
+            <span id="qFeedbackIcon" class="text-2xl">✅</span>
+            <div class="flex-1">
+              <div id="qFeedbackTitle" class="font-display font-bold text-base">Richtig!</div>
+              <p id="qFeedbackExplanation" class="text-xs sm:text-sm mt-1 leading-relaxed"></p>
+            </div>
+          </div>
+          <button id="btnContinueAfterQ" class="mt-4 w-full py-3 rounded-xl font-display font-bold text-base bg-slate-900 text-white hover:bg-slate-800 shadow-md transition">
+            Weiter im Spiel ➔
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WILD COLOR CHOOSER MODAL -->
+  <div id="colorPickerModal" class="hidden fixed inset-0 bg-slate-900/45 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-6 text-center shadow-2xl animate-pop">
+      <h3 class="font-display font-bold text-2xl text-slate-900 mb-1">Wähle das nächste Thema!</h3>
+      <p class="text-xs text-slate-500 mb-5">Welche Deutsch-Kategorie soll als Nächstes gespielt werden?</p>
+      <div class="grid grid-cols-2 gap-3">
+        <button data-pick-color="red" class="p-4 rounded-2xl bg-gradient-to-br from-rose-500 to-rose-600 hover:brightness-105 border-2 border-rose-200 text-white font-bold shadow-md transition transform hover:scale-105">
+          <div class="text-2xl mb-1">✍️</div>
+          <div class="font-display text-lg">ROT</div>
+          <div class="text-[11px] opacity-95">Rechtschreibung</div>
+        </button>
+        <button data-pick-color="blue" class="p-4 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 hover:brightness-105 border-2 border-sky-200 text-white font-bold shadow-md transition transform hover:scale-105">
+          <div class="text-2xl mb-1">🔍</div>
+          <div class="font-display text-lg">BLAU</div>
+          <div class="text-[11px] opacity-95">Grammatik</div>
+        </button>
+        <button data-pick-color="green" class="p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 hover:brightness-105 border-2 border-emerald-200 text-white font-bold shadow-md transition transform hover:scale-105">
+          <div class="text-2xl mb-1">📖</div>
+          <div class="font-display text-lg">GRÜN</div>
+          <div class="text-[11px] opacity-95">Lesen & Verstehen</div>
+        </button>
+        <button data-pick-color="yellow" class="p-4 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 hover:brightness-105 border-2 border-amber-200 text-slate-950 font-bold shadow-md transition transform hover:scale-105">
+          <div class="text-2xl mb-1">✨</div>
+          <div class="font-display text-lg">GELB</div>
+          <div class="text-[11px] opacity-90">Texte & Wortschatz</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SWAP TARGET MODAL (for Tausch-Karte ⇄) -->
+  <div id="swapTargetModal" class="hidden fixed inset-0 bg-slate-900/45 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-6 text-center shadow-2xl animate-pop">
+      <div class="text-3xl mb-2">⇄</div>
+      <h3 class="font-display font-bold text-2xl text-slate-900 mb-1">Karten-Tausch!</h3>
+      <p class="text-xs text-slate-500 mb-5">Mit welchem Mitspieler möchtest du deine Handkarten tauschen?</p>
+      <div id="swapTargetsList" class="space-y-2.5">
+        <!-- Opponent buttons injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- RULES & CURRICULUM OVERVIEW MODAL -->
+  <div id="rulesModal" class="hidden fixed inset-0 bg-slate-900/45 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="max-w-2xl w-full bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl max-h-[88vh] flex flex-col animate-pop">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <h3 class="font-display font-bold text-xl text-slate-900">📖 Spielregeln & 4. Klasse Bayern Lehrplan</h3>
+        <button id="closeRulesBtn" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold">✕</button>
+      </div>
+      <div class="overflow-y-auto py-4 space-y-4 text-sm text-slate-700 leading-relaxed">
+        <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-200">
+          <h4 class="font-bold text-amber-900 mb-1">🎯 Ziel & Ablauf</h4>
+          <p>Lege zuerst alle deine Handkarten ab! Du darfst eine Karte legen, wenn sie in <strong>Farbe (Deutsch-Bereich)</strong> oder <strong>Symbol/Zahl</strong> mit der obersten Karte übereinstimmt. Bevor deine Karte gültig abgelegt wird, musst du eine <strong>Probe-Aufgabe</strong> aus dieser Kategorie lösen!</p>
+        </div>
+        <div class="bg-sky-50/70 p-4 rounded-2xl border border-sky-200 space-y-1.5">
+          <h4 class="font-bold text-sky-900 mb-1">🃏 Sonderkarten & 1-gegen-1 Taktik</h4>
+          <p><strong>+2 (Extra-Übung):</strong> Dein Gegner muss 2 Karten ziehen – außer er hat selbst eine +2-Karte, löst eine Frage richtig und schiebt die Strafe zurück!</p>
+          <p><strong>⊘ (Pause) & ⇄ (Richtungswechsel):</strong> Im 1-gegen-1 Duell setzt dein Gegner bei beiden Karten aus und du bist sofort noch einmal am Zug!</p>
+          <p><strong>⇄👤 (Karten-Tausch):</strong> Tausche dein komplettes Blatt direkt mit deinem Gegner!</p>
+          <p><strong>🌈 (Themenwahl) & 🌈+4 (Große Probe):</strong> Wähle die nächste Farbe. Bei +4 muss dein Gegner 4 Karten ziehen (oder mit einer eigenen +4 kontern!).</p>
+          <p><strong>UNO-Ruf:</strong> Wenn du nur noch 1 Karte auf der Hand hast, drücke sofort den roten <strong>UNO!</strong>-Knopf, sonst erwischt dich dein Gegner (+2 Strafkarten)!</p>
+        </div>
+        <div class="bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200">
+          <h4 class="font-bold text-emerald-900 mb-1">🎓 Abgedeckte Themen (LehrplanPLUS Bayern, 4. Klasse)</h4>
+          <ul class="list-disc pl-5 space-y-1 text-xs text-slate-700">
+            <li><strong>Rechtschreibung (Rot):</strong> Doppelkonsonanten (ck/k, tz/z), langes i (ie/ih/ieh), Dehnungs-h, Ableiten (ä/e, äu/eu), Auslautverhärtung (b/p, d/t, g/k), Nominalisierung von Verben & Adjektiven, Zeichensetzung bei der wörtlichen Rede.</li>
+            <li><strong>Sprache untersuchen (Blau):</strong> Nomen, Verben, Adjektive, Artikel, Pronomen, Präpositionen; Zeitformen (Präsens, Präteritum, Perfekt, Futur); Satzglieder (Subjekt, Prädikat, Dativ- & Akkusativobjekt, Orts- & Zeitangabe); die 4 Fälle; Steigerung; Wortfamilien & Wortfelder.</li>
+            <li><strong>Lesen (Grün):</strong> Genaues Sinnentnehmendes Lesen (Richtig / Falsch / Steht nicht im Text), Textsorten unterscheiden (Sachtext, Fabel, Märchen, Gedicht, Anleitung), Sprichwörter & Redewendungen.</li>
+            <li><strong>Texte verfassen & Wortschatz (Gelb):</strong> Treffende Verben statt „machen/gehen/sagen“, abwechslungsreiche Satzanfänge, Konjunktionen (weil, obwohl, als, nachdem, dass), Synonyme & Antonyme, Oberbegriffe, Erzählaufbau & Briefe.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBE AUSWERTUNG / REPORT MODAL -->
+  <div id="reportModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="max-w-2xl w-full bg-white border-2 border-amber-300 rounded-3xl p-6 shadow-2xl max-h-[90vh] flex flex-col animate-pop">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Grundschule Bayern • 4. Klasse</span>
+          <h3 id="reportMainTitle" class="font-display font-bold text-2xl text-slate-900">🎓 Deine Probe-Auswertung</h3>
+        </div>
+        <button id="closeReportBtn" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold">✕</button>
+      </div>
+
+      <div class="overflow-y-auto py-4 space-y-5">
+        <!-- Winner & Grade Banner -->
+        <div class="bg-gradient-to-r from-sky-50 to-amber-50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <div id="reportWinnerText" class="font-display font-bold text-xl text-slate-900">Zwischenstand im Training</div>
+            <p id="reportSummaryText" class="text-xs text-slate-600 mt-1">Beantworte Fragen im Spiel, um deine Probe-Note zu berechnen.</p>
+          </div>
+          <div class="text-center bg-white px-5 py-3 rounded-2xl border border-amber-300 shadow-xs shrink-0">
+            <div class="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Probe-Note</div>
+            <div id="reportGradeBadge" class="font-display font-bold text-3xl text-emerald-600">1</div>
+            <div id="reportPercentText" class="text-[11px] text-slate-600">100% richtig</div>
+          </div>
+        </div>
+
+        <!-- Category Breakdown -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5">Ergebnis nach Lernbereichen</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="reportCategoriesGrid">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+
+        <!-- Mistakes Review -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-rose-600 mb-2">📝 Merkzettel: Diese Fragen solltest du nochmal anschauen</h4>
+          <div id="reportMistakesList" class="space-y-2.5 max-h-56 overflow-y-auto pr-1">
+            <!-- Mistakes injected dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-200 flex gap-3">
+        <button id="btnReportRestart" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-white font-display font-bold text-base shadow-md hover:brightness-105 transition">
+          🔄 Neue Runde starten
+        </button>
+        <button id="btnReportContinue" class="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-sm border border-slate-200 transition">
+          Schließen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toastContainer" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2"></div>
+
+  <script>
+    /**
+     * ============================================================================
+     * DEUTSCH-UNO (4. KLASSE BAYERN / LEHRPLANPLUS GRUND- UND MITTELSCHULE)
+     * Comprehensive Curriculum Question Bank + Full Strategic UNO Engine
+     * ============================================================================
+     */
+
+    // --- 1. AUDIO SYNTHESIZER (Web Audio API - no external URLs needed) ---
+    const SoundFX = (() => {
+      let ctx = null;
+      let enabled = true;
+
+      function ensureCtx() {
+        if (!ctx && enabled) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) ctx = new AudioCtx();
+        }
+        if (ctx && ctx.state === 'suspended') ctx.resume();
+      }
+
+      function playTone(freq, type = 'sine', duration = 0.14, gainVal = 0.12, delay = 0) {
+        if (!enabled) return;
+        try {
+          ensureCtx();
+          if (!ctx) return;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+          gain.gain.setValueAtTime(gainVal, ctx.currentTime + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + delay);
+          osc.stop(ctx.currentTime + delay + duration);
+        } catch (e) { /* Ignore audio block */ }
+      }
+
+      return {
+        toggle() {
+          enabled = !enabled;
+          return enabled;
+        },
+        isEnabled: () => enabled,
+        card() {
+          playTone(320, 'triangle', 0.08, 0.1);
+          playTone(460, 'triangle', 0.09, 0.08, 0.04);
+        },
+        correct() {
+          playTone(523.25, 'sine', 0.15, 0.14, 0);
+          playTone(659.25, 'sine', 0.15, 0.14, 0.1);
+          playTone(783.99, 'sine', 0.28, 0.16, 0.2);
+        },
+        wrong() {
+          playTone(230, 'sawtooth', 0.22, 0.11, 0);
+          playTone(175, 'sawtooth', 0.32, 0.11, 0.16);
+        },
+        uno() {
+          playTone(587.33, 'triangle', 0.14, 0.16, 0);
+          playTone(880, 'triangle', 0.3, 0.18, 0.12);
+        },
+        win() {
+          [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+            playTone(f, 'triangle', 0.25, 0.16, i * 0.12);
+          });
+        }
+      };
+    })();
+
+    // --- 2. COMPREHENSIVE 4TH GRADE BAVARIA DEUTSCH QUESTION BANK (76 QUESTIONS) ---
+    // Categories:
+    //   red    = Rechtschreibung & Zeichensetzung
+    //   blue   = Sprache untersuchen (Grammatik)
+    //   green  = Lesen & Textverständnis
+    //   yellow = Texte verfassen & Wortschatz
+    // Question formats:
+    //   type: 'mc' (Multiple Choice with 4 options)
+    //   type: 'word_click' (Click the exact word in a sentence that matches the prompt!)
+    const QUESTION_BANK = [
+      // ==================== ROT: RECHTSCHREIBUNG & ZEICHENSETZUNG ====================
+      {
+        id: 'r1', color: 'red', subtopic: 'Doppelkonsonanten (ck / k)',
+        type: 'mc',
+        prompt: 'Welches Wort ist richtig geschrieben?',
+        options: ['die Schnecke', 'die Schneke', 'die Schnekke', 'die Schnäke'],
+        answer: 0,
+        explanation: 'Nach einem kurz gesprochenen Selbstlaut (e) steht statt „kk“ immer „ck“: die Schnecke.'
+      },
+      {
+        id: 'r2', color: 'red', subtopic: 'Doppelkonsonanten (tz / z)',
+        type: 'mc',
+        prompt: 'Ergänze richtig: „Im Herbst fliegen viele Spatzen auf den P___atz.“',
+        options: ['Spatzen / Platz', 'Spazen / Platz', 'Spatzen / Plaz', 'Spazzen / Plaz'],
+        answer: 0,
+        explanation: 'Nach kurzem Selbstlaut (a) schreibt man „tz“ (Spatzen, Platz). Nach l, n, r steht nie tz!'
+      },
+      {
+        id: 'r3', color: 'red', subtopic: 'Regel: l, n, r – das merke ja!',
+        type: 'mc',
+        prompt: 'Welches Wort ist FALSCH geschrieben?',
+        options: ['die Katze', 'das Herz', 'der Piltz', 'glänzen'],
+        answer: 2,
+        explanation: 'Merksatz: „Nach l, n, r – da steht kein tz und kein ck!“ Richtig heißt es: der Pilz.'
+      },
+      {
+        id: 'r4', color: 'red', subtopic: 'Ableiten (ä / e)',
+        type: 'mc',
+        prompt: 'Warum schreibt man „die Bäcker“ mit „ä“?',
+        options: [
+          'Weil es vom Wortstamm „backen“ (mit a) kommt.',
+          'Weil man „Bäcker“ besonders lang spricht.',
+          'Weil alle Berufe mit „ä“ geschrieben werden.',
+          'Weil es keine Mehrzahl gibt.'
+        ],
+        answer: 0,
+        explanation: 'Wörter mit „ä“ lassen sich oft auf ein verwandtes Wort mit „a“ zurückführen: backen → der Bäcker.'
+      },
+      {
+        id: 'r5', color: 'red', subtopic: 'Ableiten (äu / eu)',
+        type: 'mc',
+        prompt: 'Welches Wort schreibt man mit „äu“?',
+        options: ['die Räuber', 'die Fräunde', 'die Läute', 'der Häu'],
+        answer: 0,
+        explanation: '„Räuber“ kommt von „rauben“ (au → äu). Freunde, Leute und Heu haben kein verwandtes Wort mit „au“.'
+      },
+      {
+        id: 'r6', color: 'red', subtopic: 'Auslautverhärtung (b/p, d/t, g/k)',
+        type: 'mc',
+        prompt: 'Wie prüfst du, ob „der Zwer___“ am Ende mit g oder k geschrieben wird?',
+        options: [
+          'Ich bilde die Mehrzahl: die Zwerge.',
+          'Ich spreche das Wort ganz leise.',
+          'Ich zähle die Silben im Wort.',
+          'Ich suche ein Gegenteil.'
+        ],
+        answer: 0,
+        explanation: 'Verlängern hilft! In der Mehrzahl „die Zwer-ge“ hört man deutlich das „g“.'
+      },
+      {
+        id: 'r7', color: 'red', subtopic: 'Auslautverhärtung (d / t)',
+        type: 'mc',
+        prompt: 'Setze den richtigen Buchstaben ein: „Das Kin___ schläft tief im Bet___“',
+        options: ['Kind / Bett', 'Kint / Bett', 'Kind / Bet', 'Kint / Bet'],
+        answer: 0,
+        explanation: 'Verlängern: die Kin-der (mit d) und die Bet-ten (mit tt).'
+      },
+      {
+        id: 'r8', color: 'red', subtopic: 'Langes i (ie / ih / ieh)',
+        type: 'mc',
+        prompt: 'In welchem Wort fehlt ein „ie“?',
+        options: ['die B___ne summt', 'der T___ger brüllt', 'der ___gel sticht', 'die M___ne im Stift'],
+        answer: 0,
+        explanation: '„Die Biene“ schreibt man mit langem ie. Tiger und Igel schreibt man nur mit i!'
+      },
+      {
+        id: 'r9', color: 'red', subtopic: 'Dehnungs-h',
+        type: 'mc',
+        prompt: 'Welches Wort braucht ein Dehnungs-h?',
+        options: ['der Stuhl', 'die Schuhle', 'der Bhär', 'die Bhume'],
+        answer: 0,
+        explanation: 'Vor l, m, n, r steht nach einem langen Selbstlaut oft ein Dehnungs-h: der Stuhl (Mehrzahl: Stüh-le).'
+      },
+      {
+        id: 'r10', color: 'red', subtopic: 'Großschreibung: Nominalisierung (Verben)',
+        type: 'mc',
+        prompt: 'Welche Schreibweise ist richtig?',
+        options: [
+          'Beim Schwimmen im See lacht Mia laut.',
+          'Beim schwimmen im See lacht Mia laut.',
+          'Beim Schwimmen im see lacht Mia laut.',
+          'beim Schwimmen im See lacht Mia laut.'
+        ],
+        answer: 0,
+        explanation: '„Beim“ (= bei dem) ist ein versteckter Artikel! Deshalb wird das Verb „Schwimmen“ hier wie ein Nomen großgeschrieben.'
+      },
+      {
+        id: 'r11', color: 'red', subtopic: 'Großschreibung: Nominalisierung (Adjektive)',
+        type: 'mc',
+        prompt: 'Ergänze richtig: „Ich wünsche dir zum Geburtstag alles ___!“',
+        options: ['Gute', 'gute', 'gutte', 'guhte'],
+        answer: 0,
+        explanation: 'Nach Signalwörtern wie „alles, etwas, nichts, viel“ schreibt man Adjektive groß: alles Gute!'
+      },
+      {
+        id: 'r12', color: 'red', subtopic: 'Wörtliche Rede (Redezeichen)',
+        type: 'mc',
+        prompt: 'Wo stehen die Redezeichen (Anführungszeichen) richtig?',
+        options: [
+          'Tim ruft: „Komm schnell her!“',
+          'Tim ruft: „Komm schnell her!‘',
+          '„Tim ruft:“ Komm schnell her!',
+          'Tim ruft „: Komm schnell her!“'
+        ],
+        answer: 0,
+        explanation: 'Nach dem vorangestellten Begleitsatz folgt ein Doppelpunkt, dann unten „ und am Ende nach dem Satzzeichen oben “.'
+      },
+      {
+        id: 'r13', color: 'red', subtopic: 'Wörtliche Rede (nachgestellter Begleitsatz)',
+        type: 'mc',
+        prompt: 'Welcher Satz hat die richtige Zeichensetzung?',
+        options: [
+          '„Wir schreiben morgen eine Probe“, erklärt Frau Huber.',
+          '„Wir schreiben morgen eine Probe.“ erklärt Frau Huber.',
+          '„Wir schreiben morgen eine Probe,“ erklärt Frau Huber.',
+          '„Wir schreiben morgen eine Probe“, Erklärt Frau Huber.'
+        ],
+        answer: 0,
+        explanation: 'Folgt der Begleitsatz nach einer Aussage, fällt der Punkt in der wörtlichen Rede weg und nach den Redezeichen oben steht ein Komma!'
+      },
+      {
+        id: 'r14', color: 'red', subtopic: 's – ss – ß',
+        type: 'mc',
+        prompt: 'Wann schreibt man „ß“ statt „ss“?',
+        options: [
+          'Nach einem langen Selbstlaut oder Zwielaut (z. B. Straße, heißen).',
+          'Immer am Anfang eines Wortes.',
+          'Nach einem ganz kurz gesprochenen Selbstlaut (z. B. Fluss).',
+          'Niemals in der 4. Klasse.'
+        ],
+        answer: 0,
+        explanation: 'Nach langem Selbstlaut (Straße, Fuß) oder Zwielaut (heißen, draußen) steht „ß“. Nach kurzem Selbstlaut steht „ss“ (Fluss, Wasser).'
+      },
+      {
+        id: 'r15', color: 'red', subtopic: 'Vorsilben ver- und vor-',
+        type: 'mc',
+        prompt: 'Welches Wort ist richtig geschrieben?',
+        options: ['verlieren & vorlesen', 'ferlieren & vorlesen', 'verlieren & forlesen', 'ferlieren & forlesen'],
+        answer: 0,
+        explanation: 'Die Vorsilben ver- und vor- schreibt man immer mit „v“!'
+      },
+      {
+        id: 'r16', color: 'red', subtopic: 'Finde den Rechtschreibfehler!',
+        type: 'word_click',
+        prompt: 'Klicke auf das FALSCH geschriebene Wort im Satz:',
+        sentence: 'Am Samstag wandern wir durch den dunklen Walt bis zum Gipfel.',
+        targetWord: 'Walt',
+        explanation: '„Walt“ ist falsch! Verlängere das Wort: die Wäl-der → man hört deutlich ein „d“, also „der Wald“.'
+      },
+      {
+        id: 'r17', color: 'red', subtopic: 'Finde den Rechtschreibfehler!',
+        type: 'word_click',
+        prompt: 'Klicke auf das FALSCH geschriebene Wort im Satz:',
+        sentence: 'Beim kochen hilft Lukas seinem Vater gerne in der Küche.',
+        targetWord: 'kochen',
+        explanation: 'Nach „Beim“ (= bei dem) wird „Kochen“ als Nomen gebraucht und muss großgeschrieben werden!'
+      },
+      {
+        id: 'r18', color: 'red', subtopic: 'Wörter mit qu / chs / x',
+        type: 'mc',
+        prompt: 'Welches Tier schreibt man mit „chs“?',
+        options: ['der Fuchs', 'der Lux', 'die Hexe', 'der Dax'],
+        answer: 0,
+        explanation: 'Der Fuchs (auch: der Dachs, der Luchs, wachsen) wird mit „chs“ geschrieben.'
+      },
+      {
+        id: 'r19', color: 'red', subtopic: 'Endungen -ig, -lich, -isch',
+        type: 'mc',
+        prompt: 'Wie schreibt man das Wort richtig: „Der Hund ist heute sehr traur___.“',
+        options: ['traurig', 'traurich', 'traurick', 'traurisch'],
+        answer: 0,
+        explanation: 'Verlängere das Adjektiv: der trau-ri-ge Hund. Man hört das „g“ → traurig!'
+      },
+
+      // ==================== BLAU: SPRACHE UNTERSUCHEN (GRAMMATIK) ====================
+      {
+        id: 'b1', color: 'blue', subtopic: 'Satzglieder: Subjekt',
+        type: 'word_click',
+        prompt: 'Klicke auf das SUBJEKT (Wer oder was?) in diesem Satz:',
+        sentence: 'Gestern fand der aufmerksame Hund einen alten Knochen.',
+        targetWord: 'Hund',
+        explanation: 'Frage nach dem Subjekt: „Wer oder was fand gestern einen alten Knochen?“ → der aufmerksame Hund (Kern: Hund).'
+      },
+      {
+        id: 'b2', color: 'blue', subtopic: 'Satzglieder: Prädikat',
+        type: 'word_click',
+        prompt: 'Klicke auf das PRÄDIKAT (Satzaussage / Tunwort) in diesem Satz:',
+        sentence: 'Im Sommer schwimmen viele Kinder im kühlen See.',
+        targetWord: 'schwimmen',
+        explanation: 'Das Prädikat sagt, was geschieht: „schwimmen“. In Aussagesätzen steht die Personalform des Verbs immer an 2. Satzglied-Stelle!'
+      },
+      {
+        id: 'b3', color: 'blue', subtopic: 'Satzglieder: Ortsangabe (Lokaladverbiale)',
+        type: 'mc',
+        prompt: 'Welches Satzglied ist unterstrichen? „Die Klasse fährt morgen NACH MÜNCHEN.“',
+        options: [
+          'Ortsangabe (Wo? / Wohin?)',
+          'Zeitangabe (Wann?)',
+          'Subjekt (Wer oder was?)',
+          'Dativobjekt (Wem?)'
+        ],
+        answer: 0,
+        explanation: 'Frage: „Wohin fährt die Klasse morgen?“ → Nach München. Das ist die Ortsangabe!'
+      },
+      {
+        id: 'b4', color: 'blue', subtopic: 'Satzglieder: Zeitangabe (Temporaladverbiale)',
+        type: 'mc',
+        prompt: 'Wie fragt man nach dem Satzglied „AM NACHMITTAG“ im Satz: „Am Nachmittag übt Lea Flöte.“?',
+        options: ['Wann?', 'Wem?', 'Wen oder was?', 'Wo?'],
+        answer: 0,
+        explanation: '„Wann übt Lea Flöte?“ → Am Nachmittag. Das ist eine Zeitangabe.'
+      },
+      {
+        id: 'b5', color: 'blue', subtopic: 'Satzglieder: Dativ- und Akkusativobjekt',
+        type: 'mc',
+        prompt: 'Welches Satzglied ist „DEM LEHRER“ im Satz: „Paul gibt dem Lehrer sein Heft.“?',
+        options: [
+          'Dativobjekt (Wem?)',
+          'Akkusativobjekt (Wen oder was?)',
+          'Subjekt (Wer oder was?)',
+          'Ortsangabe (Wo?)'
+        ],
+        answer: 0,
+        explanation: 'Frage: „Wem gibt Paul sein Heft?“ → dem Lehrer (3. Fall = Dativobjekt).'
+      },
+      {
+        id: 'b6', color: 'blue', subtopic: 'Satzglieder: Akkusativobjekt',
+        type: 'mc',
+        prompt: 'Bestimme „EIN SPANNENDES BUCH“: „Lena liest ein spannendes Buch.“',
+        options: [
+          'Akkusativobjekt (Wen oder was?)',
+          'Dativobjekt (Wem?)',
+          'Subjekt (Wer oder was?)',
+          'Zeitangabe (Wann?)'
+        ],
+        answer: 0,
+        explanation: 'Frage: „Wen oder was liest Lena?“ → ein spannendes Buch (4. Fall = Akkusativobjekt).'
+      },
+      {
+        id: 'b7', color: 'blue', subtopic: 'Zeitformen: Präteritum (1. Vergangenheit)',
+        type: 'mc',
+        prompt: 'Wie lautet das Verb „laufen“ im Präteritum (Erzählzeit): „Gestern ___ ich schnell heim.“?',
+        options: ['lief', 'laufte', 'bin gelaufen', 'werde laufen'],
+        answer: 0,
+        explanation: '„laufen“ ist ein starkes (unregelmäßiges) Verb: ich laufe (Präsens) → ich lief (Präteritum).'
+      },
+      {
+        id: 'b8', color: 'blue', subtopic: 'Zeitformen: Perfekt (2. Vergangenheit)',
+        type: 'mc',
+        prompt: 'Welcher Satz steht im PERFEKT?',
+        options: [
+          'Wir haben gestern einen Kuchen gebacken.',
+          'Wir backten gestern einen Kuchen.',
+          'Wir backen heute einen Kuchen.',
+          'Wir werden morgen einen Kuchen backen.'
+        ],
+        answer: 0,
+        explanation: 'Das Perfekt (gesprochene Vergangenheit) wird mit „haben“ oder „sein“ + Partizip gebildet: haben gebacken.'
+      },
+      {
+        id: 'b9', color: 'blue', subtopic: 'Zeitformen: Futur (Zukunft)',
+        type: 'mc',
+        prompt: 'In welcher Zeitform steht der Satz: „Nächstes Jahr werde ich in die 5. Klasse gehen.“?',
+        options: ['Futur (Zukunft)', 'Präsens (Gegenwart)', 'Präteritum (1. Vergangenheit)', 'Perfekt (2. Vergangenheit)'],
+        answer: 0,
+        explanation: 'Mit „werden“ + Grundform (Infinitiv) bildet man das Futur (Zukunft).'
+      },
+      {
+        id: 'b10', color: 'blue', subtopic: 'Die 4 Fälle des Nomens',
+        type: 'mc',
+        prompt: 'In welchem Fall steht „DES HUNDES“: „Das Fell des Hundes ist weich.“?',
+        options: [
+          '2. Fall: Genitiv (Wessen?)',
+          '1. Fall: Nominativ (Wer oder was?)',
+          '3. Fall: Dativ (Wem?)',
+          '4. Fall: Akkusativ (Wen oder was?)'
+        ],
+        answer: 0,
+        explanation: 'Frage: „Wessen Fell ist weich?“ → des Hundes. Das ist der 2. Fall (Genitiv).'
+      },
+      {
+        id: 'b11', color: 'blue', subtopic: 'Wortarten: Pronomen (Fürwörter)',
+        type: 'word_click',
+        prompt: 'Klicke auf das PRONOMEN (Fürwort) in diesem Satz:',
+        sentence: 'Max hat ein neues Fahrrad und er putzt es stolz.',
+        targetWord: 'er',
+        explanation: '„er“ (und „es“) sind Personalpronomen (persönliche Fürwörter), die Nomen ersetzen.'
+      },
+      {
+        id: 'b12', color: 'blue', subtopic: 'Wortarten: Präpositionen (Verhältniswörter)',
+        type: 'mc',
+        prompt: 'Welche Wortart sind die Wörter „auf, unter, hinter, neben, zwischen“?',
+        options: ['Präpositionen (Verhältniswörter)', 'Adjektive (Wiewörter)', 'Pronomen (Fürwörter)', 'Nomen (Namenwörter)'],
+        answer: 0,
+        explanation: 'Wörter wie auf, unter, hinter, neben zeigen an, wo oder wann etwas ist – sie heißen Präpositionen.'
+      },
+      {
+        id: 'b13', color: 'blue', subtopic: 'Steigerung von Adjektiven',
+        type: 'mc',
+        prompt: 'Wie lautet die richtige Steigerungsreihe von „hoch“?',
+        options: [
+          'hoch – höher – am höchsten',
+          'hoch – hocher – am hochsten',
+          'hoch – höher – am höchersten',
+          'hoch – am höchsten – höher'
+        ],
+        answer: 0,
+        explanation: 'Bei „hoch“ fällt in der 1. Steigerungsstufe das c weg (höher), im Superlativ steht es wieder da (am höchsten).'
+      },
+      {
+        id: 'b14', color: 'blue', subtopic: 'Steigerung von Adjektiven (Vergleichswörter)',
+        type: 'mc',
+        prompt: 'Setze richtig ein: „Tom ist genauso schnell ___ Ben, aber Emma läuft noch schneller ___ beide.“',
+        options: ['wie / als', 'als / wie', 'wie / wie', 'als / als'],
+        answer: 0,
+        explanation: 'Bei Gleichheit (Grundstufe) steht „wie“ (so schnell wie). Nach der Steigerungsstufe steht „als“ (schneller als).'
+      },
+      {
+        id: 'b15', color: 'blue', subtopic: 'Wortfamilien & Wortstamm',
+        type: 'mc',
+        prompt: 'Welches Wort gehört NICHT zur Wortfamilie „fahr“?',
+        options: ['die Gefahr', 'das Fahrrad', 'der Fahrer', 'abfahren'],
+        answer: 0,
+        explanation: 'Fahrrad, Fahrer und abfahren haben den Wortstamm „fahr“ (fortbewegen). „Gefahr“ hat eine ganz andere Bedeutung!'
+      },
+      {
+        id: 'b16', color: 'blue', subtopic: 'Zusammengesetzte Nomen (Komposita)',
+        type: 'mc',
+        prompt: 'Welches Wort bestimmt bei „die Schokoladentorte“ den Artikel (der, die, das)?',
+        options: [
+          'Immer das Grundwort am Ende (die Torte).',
+          'Immer das Bestimmungswort vorne.',
+          'Man darf sich den Artikel aussuchen.',
+          'Es gibt keinen Artikel.'
+        ],
+        answer: 0,
+        explanation: 'Bei zusammengesetzten Nomen bestimmt immer das letzte Wort (das Grundwort) den Artikel: die Torte → die Schokoladentorte.'
+      },
+      {
+        id: 'b17', color: 'blue', subtopic: 'Umstellprobe bei Satzgliedern',
+        type: 'mc',
+        prompt: 'Wozu benutzt man in der 4. Klasse die „Umstellprobe“?',
+        options: [
+          'Um herauszufinden, welche Wörter zusammen ein Satzglied bilden.',
+          'Um Rechtschreibfehler am Wortende zu hören.',
+          'Um ein Wort in die Mehrzahl zu setzen.',
+          'Um zu prüfen, ob ein Wort ein Nomen ist.'
+        ],
+        answer: 0,
+        explanation: 'Wörter, die beim Umstellen eines Satzes immer zusammenbleiben müssen, bilden gemeinsam ein Satzglied!'
+      },
+      {
+        id: 'b18', color: 'blue', subtopic: 'Verben: Grundform & Personalform',
+        type: 'mc',
+        prompt: 'Welche Verbform ist die Grundform (Infinitiv)?',
+        options: ['lesen', 'du liest', 'wir lasen', 'er hat gelesen'],
+        answer: 0,
+        explanation: 'Die Grundform (Infinitiv) endet fast immer auf -en (oder -n): lesen, gehen, basteln.'
+      },
+      {
+        id: 'b19', color: 'blue', subtopic: 'Adjektive erkennen',
+        type: 'word_click',
+        prompt: 'Klicke auf das ADJEKTIV (Wiewort) in diesem Satz:',
+        sentence: 'Die mutige Feuerwehrfrau rettete gestern eine Katze.',
+        targetWord: 'mutige',
+        explanation: '„mutige“ beschreibt, wie die Feuerwehrfrau ist (Wie ist sie? → mutig). Deshalb ist es ein Adjektiv.'
+      },
+
+      // ==================== GRÜN: LESEN & TEXTVERSTÄNDNIS ====================
+      {
+        id: 'g1', color: 'green', subtopic: 'Genau lesen: Richtig / Falsch / Steht nicht im Text',
+        type: 'mc',
+        reading: 'Der Steinadler lebt in den bayerischen Alpen. Mit einer Flügelspannweite von über zwei Metern ist er ein beeindruckender Jäger. Sein Nest, das man Horst nennt, baut er hoch oben in steilen Felswänden. Steinadler können ihre Beute aus mehr als drei Kilometern Entfernung entdecken.',
+        prompt: 'Welche Aussage stimmt laut dem Text?',
+        options: [
+          'Das Nest eines Steinadlers heißt Horst.',
+          'Steinadler fressen am liebsten Beeren und Nüsse.',
+          'Ein Steinadler hat eine Flügelspannweite von genau einem Meter.',
+          'Steinadler bauen ihre Nester im tiefen Wald auf dem Boden.'
+        ],
+        answer: 0,
+        explanation: 'Im Text steht wörtlich: „Sein Nest, das man Horst nennt, baut er hoch oben in steilen Felswänden.“'
+      },
+      {
+        id: 'g2', color: 'green', subtopic: 'Informationen prüfen (Steht nicht im Text)',
+        type: 'mc',
+        reading: 'Am Freitag unternimmt die Klasse 4b einen Wandertag zum Chiemsee. Um 8:15 Uhr fährt der Bus an der Schule ab. Alle Kinder sollen festes Schuhwerk, eine Regenjacke und ausreichend Brotzeit einpacken. Um 15:30 Uhr kommt die Klasse wieder an der Schule an.',
+        prompt: 'Welche Information STEHT NICHT im Text?',
+        options: [
+          'Wie viel die Busfahrt für jedes Kind kostet.',
+          'Wann der Bus an der Schule losfährt.',
+          'Wohin der Wandertag geht.',
+          'Was die Kinder in ihren Rucksack packen sollen.'
+        ],
+        answer: 0,
+        explanation: 'Abfahrt (8:15 Uhr), Ziel (Chiemsee) und Gepäck stehen im Text – über den Preis steht dort nichts!'
+      },
+      {
+        id: 'g3', color: 'green', subtopic: 'Textsorten erkennen: Fabel',
+        type: 'mc',
+        reading: 'Ein durstiger Rabe fand einen Krug mit etwas Wasser darin. Doch sein Schnabel erreichte das Wasser nicht. Da warf der kluge Rabe so lange kleine Steine in den Krug, bis das Wasser ganz nach oben stieg und er trinken konnte. Merke: Mit Nachdenken löst man auch schwierige Aufgaben.',
+        prompt: 'Um welche Textsorte handelt es sich hier?',
+        options: ['Um eine Fabel', 'Um ein Rezept', 'Um einen Zeitungsbericht', 'Um eine Bastelanleitung'],
+        answer: 0,
+        explanation: 'In einer Fabel handeln Tiere wie Menschen und am Ende gibt es eine Lehre (Moral).'
+      },
+      {
+        id: 'g4', color: 'green', subtopic: 'Textsorten erkennen: Sachtext vs. Erzählung',
+        type: 'mc',
+        prompt: 'Woran erkennst du einen SACHTEXT?',
+        options: [
+          'Er informiert sachlich und wahrheitsgetreu über ein Thema (z. B. über Biber).',
+          'Er beginnt meistens mit „Es war einmal vor langer Zeit...“.',
+          'Er hat am Ende jeder Zeile ein Reimwort.',
+          'Er erzählt eine frei erfundene Abenteuergeschichte.'
+        ],
+        answer: 0,
+        explanation: 'Sachtexte vermitteln echte Informationen und Fakten ohne erfundene Geschichten.'
+      },
+      {
+        id: 'g5', color: 'green', subtopic: 'Textsorten erkennen: Gedicht',
+        type: 'mc',
+        prompt: 'Wie nennt man die einzelnen Abschnitte eines Gedichts?',
+        options: ['Strophen (und Zeilen heißen Verse)', 'Kapitel', 'Zutatenlisten', 'Überschriften'],
+        answer: 0,
+        explanation: 'Ein Gedicht besteht aus Strophen, und jede einzelne Zeile eines Gedichts nennt man Vers.'
+      },
+      {
+        id: 'g6', color: 'green', subtopic: 'Sprichwörter verstehen',
+        type: 'mc',
+        prompt: 'Was bedeutet das Sprichwort: „Aller Anfang ist schwer“?',
+        options: [
+          'Wenn man etwas Neues lernt, braucht man am Anfang Geduld und Übung.',
+          'Man sollte schwierige Aufgaben lieber sofort aufgeben.',
+          'Am Anfang einer Wanderung ist der Rucksack am leichtesten.',
+          'Nur am Montag sind Schulaufgaben schwer.'
+        ],
+        answer: 0,
+        explanation: 'Das Sprichwort ermutigt uns: Neues fällt zu Beginn oft nicht leicht, wird aber mit Übung besser!'
+      },
+      {
+        id: 'g7', color: 'green', subtopic: 'Redewendungen verstehen',
+        type: 'mc',
+        prompt: 'Was bedeutet die Redewendung: „jemandem die Daumen drücken“?',
+        options: [
+          'Jemandem viel Glück und Erfolg wünschen.',
+          'Jemanden beim Armdrücken besiegen.',
+          'Sich die Hände waschen.',
+          'Jemandem einen Streich spielen.'
+        ],
+        answer: 0,
+        explanation: 'Wenn man jemandem die Daumen drückt, wünscht man ihm viel Glück – zum Beispiel vor einer Probe!'
+      },
+      {
+        id: 'g8', color: 'green', subtopic: 'Genau lesen & Schlussfolgern',
+        type: 'mc',
+        reading: 'Anna, Ben und Clara sitzen nebeneinander im Kino. Anna sitzt nicht ganz links. Ben sitzt rechts neben Anna. Clara hat Popcorn gekauft.',
+        prompt: 'In welcher Reihenfolge sitzen die drei Kinder von links nach rechts?',
+        options: [
+          'Clara – Anna – Ben',
+          'Anna – Ben – Clara',
+          'Ben – Anna – Clara',
+          'Clara – Ben – Anna'
+        ],
+        answer: 0,
+        explanation: 'Ben sitzt rechts neben Anna (also Anna – Ben). Da Anna nicht ganz links sitzt, muss Clara ganz links sitzen: Clara – Anna – Ben!'
+      },
+      {
+        id: 'g9', color: 'green', subtopic: 'Hauptaussage eines Textes finden',
+        type: 'mc',
+        reading: 'Honigbienen sind für uns Menschen unverzichtbar. Während sie Nektar sammeln, bestäuben sie Blüten von Obstbäumen, Beerensträuchern und Gemüsepflanzen. Ohne die fleißigen Insekten gäbe es viel weniger Äpfel, Kirschen und Erdbeeren.',
+        prompt: 'Welche Überschrift passt am besten zum Inhalt dieses Absatzes?',
+        options: [
+          'Warum Bienen für unsere Ernte so wichtig sind',
+          'Wie man einen Bienenstock aus Holz baut',
+          'Gefährliche Wespen im Sommergarten',
+          'Die besten Kuchenrezepte mit Honig'
+        ],
+        answer: 0,
+        explanation: 'Der Absatz erklärt, wie Bienen Pflanzen bestäuben und dadurch für Obst und Gemüse sorgen.'
+      },
+      {
+        id: 'g10', color: 'green', subtopic: 'Redewendungen: „Tomaten auf den Augen haben“',
+        type: 'mc',
+        prompt: 'Wann sagt man: „Du hast wohl Tomaten auf den Augen!“?',
+        options: [
+          'Wenn jemand etwas Offensichtliches übersieht, das direkt vor ihm liegt.',
+          'Wenn jemand besonders gerne Gemüsesalat isst.',
+          'Wenn jemand sehr müde ist und schläft.',
+          'Wenn jemand eine Sonnenbrille trägt.'
+        ],
+        answer: 0,
+        explanation: 'Wer „Tomaten auf den Augen hat“, bemerkt etwas nicht, obwohl es ganz deutlich zu sehen ist.'
+      },
+      {
+        id: 'g11', color: 'green', subtopic: 'Textsorten: Märchenmerkmale',
+        type: 'mc',
+        prompt: 'Welches Merkmal ist typisch für ein MÄRCHEN?',
+        options: [
+          'Zauberei, sprechende Tiere, gute und böse Figuren sowie magische Zahlen (3, 7, 12).',
+          'Genaue Jahreszahlen und echte Ortsnamen aus dem Lexikon.',
+          'Eine Liste mit Backzutaten und Backzeit.',
+          'Ein Inhaltsverzeichnis mit Seitenzahlen.'
+        ],
+        answer: 0,
+        explanation: 'Märchen spielen in einer Zauberwelt („Es war einmal...“) und enden fast immer gut.'
+      },
+      {
+        id: 'g12', color: 'green', subtopic: 'Genau lesen: Sachinformationen',
+        type: 'mc',
+        reading: 'Der Feldhase ist ein echter Sprintmeister: Bei Gefahr erreicht er bis zu 70 Stundenkilometer und schlägt blitzschnell Haken, um Verfolger abzuschütteln. Anders als Wildkaninchen gräbt der Feldhase keine tiefen Erdbaue, sondern drückt sich in eine flache Mulde im Feld, die man Sasse nennt.',
+        prompt: 'Wo ruht sich der Feldhase aus?',
+        options: [
+          'In einer flachen Mulde auf dem Feld (Sasse).',
+          'In einem tiefen unterirdischen Bau.',
+          'Hoch oben auf alten Eichenbäumen.',
+          'In einer Höhle im Hochgebirge.'
+        ],
+        answer: 0,
+        explanation: 'Im Text steht: Der Feldhase gräbt keine Erdbaue, sondern nutzt eine flache Mulde namens „Sasse“.'
+      },
+      {
+        id: 'g13', color: 'green', subtopic: 'Sprichwort: „Lügen haben kurze Beine“',
+        type: 'mc',
+        prompt: 'Was bedeutet „Lügen haben kurze Beine“?',
+        options: [
+          'Eine Lüge kommt meistens schon bald heraus.',
+          'Menschen, die lügen, können nicht schnell rennen.',
+          'Kurze Geschichten sind immer gelogen.',
+          'Man darf nur kurze Sätze sprechen.'
+        ],
+        answer: 0,
+        explanation: 'Mit einer Lüge kommt man nicht weit – die Wahrheit wird schnell entdeckt.'
+      },
+      {
+        id: 'g14', color: 'green', subtopic: 'Gebrauchstexte: Anleitung / Rezept',
+        type: 'mc',
+        prompt: 'Warum sind in einer Bastelanleitung oder einem Rezept die Schritte oft nummeriert (1., 2., 3.)?',
+        options: [
+          'Damit man die richtige Reihenfolge einhält und nichts vergisst.',
+          'Damit der Text länger aussieht.',
+          'Weil man die Schritte von hinten nach vorne machen soll.',
+          'Weil Zahlen schöner aussehen als Buchstaben.'
+        ],
+        answer: 0,
+        explanation: 'Bei Anleitungen ist die genaue Schritt-für-Schritt-Reihenfolge entscheidend für das Gelingen.'
+      },
+
+      // ==================== GELB: TEXTE VERFASSEN & WORTSCHATZ ====================
+      {
+        id: 'y1', color: 'yellow', subtopic: 'Treffende Verben statt „sagen“',
+        type: 'mc',
+        prompt: 'Welches treffende Verb ersetzt „sagen“ am besten? „Hilfe, eine Spinne!“, ___ Lisa erschrocken.',
+        options: ['kreischte', 'flüsterte', 'gähnte', 'murmelte'],
+        answer: 0,
+        explanation: 'Wenn jemand erschrocken Hilfe ruft, passt „kreischte“ (oder „schrie“) viel besser als das langweilige „sagte“.'
+      },
+      {
+        id: 'y2', color: 'yellow', subtopic: 'Treffende Verben statt „gehen“',
+        type: 'mc',
+        prompt: 'Welches Verb passt am besten zu einem Dieb, der sich ganz leise bewegt?',
+        options: ['schleichen', 'stampfen', 'marschieren', 'hüpfen'],
+        answer: 0,
+        explanation: 'Leise und vorsichtig gehen nennt man „schleichen“ – das macht Geschichten lebendig!'
+      },
+      {
+        id: 'y3', color: 'yellow', subtopic: 'Abwechslungsreiche Satzanfänge',
+        type: 'mc',
+        prompt: 'In einem Aufsatz beginnt jeder Satz mit „Dann... Dann... Dann...“. Wie kannst du das verbessern?',
+        options: [
+          'Durch abwechslungsreiche Satzanfänge wie „Plötzlich“, „Kurz darauf“ oder „Schließlich“.',
+          'Indem ich alle Punkte weglasse und einen Riesensatz schreibe.',
+          'Indem ich statt „Dann“ immer „Und dann“ schreibe.',
+          'Man muss nichts ändern, das ist guter Stil.'
+        ],
+        answer: 0,
+        explanation: 'Abwechslungsreiche Satzanfänge (z. B. Plötzlich, Auf einmal, Nach einer Weile) machen Texte spannend.'
+      },
+      {
+        id: 'y4', color: 'yellow', subtopic: 'Bindewörter (Konjunktionen)',
+        type: 'mc',
+        prompt: 'Welches Bindewort (Konjunktion) passt sinnvoll? „Jonas nimmt einen Regenschirm mit, ___ dunkle Wolken am Himmel stehen.“',
+        options: ['weil', 'obwohl', 'damit', 'bevor'],
+        answer: 0,
+        explanation: '„weil“ nennt den Grund (Begründung): Warum nimmt er den Schirm mit? Weil dunkle Wolken da sind!'
+      },
+      {
+        id: 'y5', color: 'yellow', subtopic: 'Bindewörter: Gegensätze ausdrücken',
+        type: 'mc',
+        prompt: 'Setze das passende Bindewort ein: „___ es in Strömen regnete, spielten die Kinder fröhlich draußen.“',
+        options: ['Obwohl', 'Weil', 'Nachdem', 'Falls'],
+        answer: 0,
+        explanation: '„Obwohl“ drückt einen Gegensatz aus: Eigentlich bleibt man bei Regen drin, trotzdem spielten sie draußen.'
+      },
+      {
+        id: 'y6', color: 'yellow', subtopic: 'Gegenteile (Antonyme)',
+        type: 'mc',
+        prompt: 'Wie heißt das genaue Gegenteil (Antonym) von „mutig“?',
+        options: ['feige / ängstlich', 'stark', 'frech', 'schnell'],
+        answer: 0,
+        explanation: 'Das Gegenteil von mutig ist feige oder ängstlich.'
+      },
+      {
+        id: 'y7', color: 'yellow', subtopic: 'Synonyme (Wörter mit ähnlicher Bedeutung)',
+        type: 'mc',
+        prompt: 'Welches Wort ist ein Synonym (bedeutungsähnliches Wort) für „riesig“?',
+        options: ['gigantisch', 'winzig', 'schmal', 'leicht'],
+        answer: 0,
+        explanation: '„gigantisch“ (oder „gewaltig“, „enorm“) bedeutet dasselbe wie „riesig“.'
+      },
+      {
+        id: 'y8', color: 'yellow', subtopic: 'Oberbegriffe finden',
+        type: 'mc',
+        prompt: 'Welcher Oberbegriff passt zu: „Hammer, Zange, Säge, Schraubenzieher“?',
+        options: ['Werkzeuge', 'Möbelstücke', 'Küchengeräte', 'Musikinstrumente'],
+        answer: 0,
+        explanation: 'Hammer, Zange, Säge und Schraubenzieher gehören alle zum Oberbegriff „Werkzeuge“.'
+      },
+      {
+        id: 'y9', color: 'yellow', subtopic: 'Erzählaufbau: Einleitung, Hauptteil, Schluss',
+        type: 'mc',
+        prompt: 'Welche W-Fragen beantwortet man meistens in der EINLEITUNG einer Erzählung?',
+        options: [
+          'Wer? Wann? Wo? (und manchmal Was passiert zuerst?)',
+          'Wie geht die Geschichte ganz am Ende aus?',
+          'Welche Note bekomme ich auf den Aufsatz?',
+          'Wie viele Wörter hat der Hauptteil?'
+        ],
+        answer: 0,
+        explanation: 'Die Einleitung führt in die Geschichte ein und klärt: Wer spielt mit, wann und wo passiert es?'
+      },
+      {
+        id: 'y10', color: 'yellow', subtopic: 'Erzählaufbau: Spannungskurve',
+        type: 'mc',
+        prompt: 'Wo befindet sich der Höhepunkt (die spannendste Stelle) einer Erlebniserzählung?',
+        options: [
+          'Im Hauptteil',
+          'Ganz am Anfang der Einleitung',
+          'In der Überschrift',
+          'Nach der Unterschrift'
+        ],
+        answer: 0,
+        explanation: 'Im Hauptteil baut sich die Spannung Schritt für Schritt bis zum Höhepunkt auf.'
+      },
+      {
+        id: 'y11', color: 'yellow', subtopic: 'Brief & E-Mail schreiben',
+        type: 'mc',
+        prompt: 'Wie schreibt man nach einer Briefanrede weiter? „Liebe Oma,\n___ danke dir sehr für das tolle Buch!“',
+        options: ['ich (kleingeschrieben)', 'Ich (großgeschrieben)', 'ICH (alles groß)', 'Man lässt es weg.'],
+        answer: 0,
+        explanation: 'Nach dem Komma der Briefanrede („Liebe Oma,“) beginnt der erste Satz des Briefes kleingeschrieben („ich“).'
+      },
+      {
+        id: 'y12', color: 'yellow', subtopic: 'Vorgangsbeschreibung (z. B. Rezept / Basteln)',
+        type: 'mc',
+        prompt: 'In welcher Zeitform schreibt man eine Vorgangsbeschreibung (z. B. „Wie man Pfannkuchen backt“)?',
+        options: [
+          'Im Präsens (Gegenwart)',
+          'Im Präteritum (1. Vergangenheit)',
+          'Im Futur (Zukunft)',
+          'Immer in der wörtlichen Rede'
+        ],
+        answer: 0,
+        explanation: 'Vorgangsbeschreibungen stehen immer im Präsens (z. B. „Zuerst verrührst du das Mehl mit der Milch.“).'
+      },
+      {
+        id: 'y13', color: 'yellow', subtopic: 'Treffende Adjektive (Gefühle beschreiben)',
+        type: 'mc',
+        prompt: 'Welches Adjektiv beschreibt ein Gefühl besonders genau statt „gut“?',
+        options: ['überglücklich', 'eckig', 'rund', 'dunkel'],
+        answer: 0,
+        explanation: '„überglücklich“, „begeistert“ oder „stolz“ zeigen dem Leser genau, wie sich die Figur fühlt!'
+      },
+      {
+        id: 'y14', color: 'yellow', subtopic: 'Wortfeld „sehen / schauen“',
+        type: 'mc',
+        prompt: 'Welches Wort gehört NICHT zum Wortfeld „sehen / schauen“?',
+        options: ['lauschen', 'beobachten', 'blicken', 'entdecken'],
+        answer: 0,
+        explanation: '„lauschen“ gehört zum Hören (Ohren), während beobachten, blicken und entdecken zum Sehen gehören.'
+      },
+      {
+        id: 'y15', color: 'yellow', subtopic: 'Sätze verbinden: „dass“ oder „das“?',
+        type: 'mc',
+        prompt: 'Setze richtig ein: „Ich freue mich sehr, ___ wir heute gemeinsam UNO spielen!“',
+        options: ['dass', 'das', 'daß', 'daz'],
+        answer: 0,
+        explanation: 'Kann man das Wort NICHT durch „dieses, jenes oder welches“ ersetzen, schreibt man das Bindewort „dass“ mit Doppel-s!'
+      }
+    ];
+
+    // --- 3. CATEGORY METADATA ---
+    const CATEGORIES = {
+      red: {
+        name: 'Rot',
+        label: 'Rechtschreibung',
+        icon: '✍️',
+        badgeBg: 'bg-rose-600 text-white',
+        headerGrad: 'from-rose-500 to-red-600',
+        textClass: 'text-rose-700',
+        borderClass: 'border-rose-200'
+      },
+      blue: {
+        name: 'Blau',
+        label: 'Grammatik',
+        icon: '🔍',
+        badgeBg: 'bg-sky-600 text-white',
+        headerGrad: 'from-sky-500 to-blue-700',
+        textClass: 'text-sky-700',
+        borderClass: 'border-sky-200'
+      },
+      green: {
+        name: 'Grün',
+        label: 'Lesen',
+        icon: '📖',
+        badgeBg: 'bg-emerald-600 text-white',
+        headerGrad: 'from-emerald-500 to-green-700',
+        textClass: 'text-emerald-700',
+        borderClass: 'border-emerald-200'
+      },
+      yellow: {
+        name: 'Gelb',
+        label: 'Texte & Wörter',
+        icon: '✨',
+        badgeBg: 'bg-amber-400 text-slate-950',
+        headerGrad: 'from-amber-400 to-orange-500',
+        textClass: 'text-amber-800',
+        borderClass: 'border-amber-200'
+      }
+    };
+
+    // --- 4. GAME STATE ---
+    const state = {
+      initialCards: 10,
+      selectedOpponentId: 'ai_lena',
+      players: [], // { id, name, avatar, isHuman, hand: [], saidUno: false }
+      currentPlayerIndex: 0,
+      direction: 1, // 1 = clockwise, -1 = counter-clockwise
+      deck: [],
+      discardPile: [],
+      activeColor: 'red',
+      pendingDrawStack: 0, // Accumulated +2 / +4 cards
+      pendingDrawType: null, // '+2' or '+4'
+      isBusy: false,
+      gameOver: false,
+      usedQuestionIds: new Set(),
+      stats: {
+        total: 0,
+        correct: 0,
+        byCategory: {
+          red: { total: 0, correct: 0 },
+          blue: { total: 0, correct: 0 },
+          green: { total: 0, correct: 0 },
+          yellow: { total: 0, correct: 0 }
+        },
+        mistakes: [] // { question, chosenLabel, correctLabel }
+      },
+      pendingAction: null // Holds context while Question / ColorPicker / Swap modal is open
+    };
+
+    // --- 5. DECK CREATION & CARD HELPERS ---
+    function createDeck() {
+      const colors = ['red', 'blue', 'green', 'yellow'];
+      const deck = [];
+      let uid = 1;
+
+      colors.forEach(color => {
+        // Numbers 1 to 9 (two copies each for rich, longer games)
+        for (let n = 1; n <= 9; n++) {
+          deck.push({ id: uid++, color, value: String(n), type: 'number' });
+          deck.push({ id: uid++, color, value: String(n), type: 'number' });
+        }
+        // Zero (one copy)
+        deck.push({ id: uid++, color, value: '0', type: 'number' });
+
+        // Action cards per color (2 each)
+        for (let i = 0; i < 2; i++) {
+          deck.push({ id: uid++, color, value: '+2', type: 'draw2' });
+          deck.push({ id: uid++, color, value: '⊘', type: 'skip' });
+          deck.push({ id: uid++, color, value: '⇄', type: 'reverse' });
+        }
+        // 1 Hand-Swap card per color to keep long games exciting and dynamic
+        deck.push({ id: uid++, color, value: '⇄👤', type: 'swap' });
+      });
+
+      // Wild cards (4 each)
+      for (let i = 0; i < 4; i++) {
+        deck.push({ id: uid++, color: 'wild', value: '🌈', type: 'wild' });
+        deck.push({ id: uid++, color: 'wild', value: '+4', type: 'wild4' });
+      }
+
+      return shuffle(deck);
+    }
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function drawFromDeck(count = 1) {
+      const drawn = [];
+      for (let i = 0; i < count; i++) {
+        if (state.deck.length === 0) {
+          // Reshuffle discard pile except top card
+          if (state.discardPile.length <= 1) {
+            // Emergency fresh deck if somehow all cards are in hands
+            state.deck = createDeck();
+          } else {
+            const top = state.discardPile.pop();
+            state.deck = shuffle(state.discardPile);
+            state.discardPile = [top];
+            showToast('🔄 Ablagestapel wurde neu gemischt!');
+          }
+        }
+        if (state.deck.length > 0) {
+          drawn.push(state.deck.pop());
+        }
+      }
+      updateDeckBadge();
+      return drawn;
+    }
+
+    function getTopDiscard() {
+      return state.discardPile[state.discardPile.length - 1];
+    }
+
+    function isCardPlayable(card) {
+      const top = getTopDiscard();
+      if (!top) return true;
+
+      // If a +2 or +4 stack is currently active, player can ONLY counter with matching +2 or +4!
+      if (state.pendingDrawStack > 0) {
+        if (state.pendingDrawType === '+2') {
+          return card.type === 'draw2' || card.type === 'wild4';
+        }
+        if (state.pendingDrawType === '+4') {
+          return card.type === 'wild4';
+        }
+      }
+
+      if (card.color === 'wild') return true;
+      if (card.color === state.activeColor) return true;
+      if (card.value === top.value) return true;
+      return false;
+    }
+
+    function getCardLabelDE(card) {
+      const colName = card.color === 'wild' ? 'Joker' : CATEGORIES[card.color].name;
+      const typeNames = {
+        number: card.value,
+        draw2: '+2 Extra-Übung',
+        skip: 'Pause (Aussetzen)',
+        reverse: 'Richtungswechsel',
+        swap: 'Karten-Tausch',
+        wild: 'Themenwahl',
+        wild4: 'Große Probe +4'
+      };
+      return `${colName} ${typeNames[card.type] || card.value}`;
+    }
+
+    // --- 6. RENDERING CARDS & UI ---
+    function createCardHTML(card, playable = false, size = 'normal') {
+      const colorClass = card.color === 'wild' ? 'card-wild' : `card-${card.color}`;
+      const sizeClasses = size === 'normal'
+        ? 'w-20 h-32 sm:w-24 sm:h-36'
+        : 'w-24 h-36 sm:w-28 sm:h-40';
+      const playableClass = size === 'normal'
+        ? (playable ? 'uno-card-playable ring-2 ring-amber-300/80' : 'uno-card-disabled')
+        : '';
+
+      const textColor = card.color === 'yellow' ? 'text-amber-700'
+        : card.color === 'red' ? 'text-rose-600'
+        : card.color === 'blue' ? 'text-sky-700'
+        : card.color === 'green' ? 'text-emerald-700'
+        : 'text-slate-900';
+
+      const subBadge = {
+        draw2: '+2',
+        skip: 'Pause',
+        reverse: 'Richtung',
+        swap: 'Tausch',
+        wild: 'Thema',
+        wild4: '+4 Probe',
+        number: card.color !== 'wild' ? CATEGORIES[card.color].icon : ''
+      }[card.type];
+
+      return `
+        <div data-card-id="${card.id}" class="uno-card ${colorClass} ${sizeClasses} ${playableClass} flex flex-col justify-between p-1.5 sm:p-2 select-none">
+          <div class="uno-oval"></div>
+          <div class="relative z-10 flex items-center justify-between leading-none">
+            <span class="font-display font-bold text-xs sm:text-sm text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">${card.value}</span>
+            <span class="text-[10px] drop-shadow">${card.color !== 'wild' ? CATEGORIES[card.color].icon : '🎓'}</span>
+          </div>
+          <div class="relative z-10 flex flex-col items-center justify-center my-auto">
+            <span class="font-display font-bold text-2xl sm:text-3xl ${textColor} tracking-tight leading-none">${card.value}</span>
+            <span class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-tighter text-slate-700 mt-0.5">${subBadge}</span>
+          </div>
+          <div class="relative z-10 flex items-center justify-between leading-none rotate-180">
+            <span class="font-display font-bold text-xs sm:text-sm text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">${card.value}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAll() {
+      renderOpponents();
+      renderCenterArena();
+      renderPlayerHand();
+      updateHeaderStats();
+    }
+
+    function renderOpponents() {
+      const container = document.getElementById('opponentsContainer');
+      const opp = state.players.find(p => !p.isHuman);
+      if (!opp) return;
+
+      container.className = 'flex justify-center w-full';
+      const isTurn = state.players[state.currentPlayerIndex]?.id === opp.id && !state.gameOver;
+      const activeRing = isTurn
+        ? 'ring-2 ring-amber-400 bg-white shadow-md shadow-amber-500/15 border-amber-300'
+        : 'bg-white/95 border-slate-200 shadow-sm';
+      const unoWarn = opp.hand.length === 1
+        ? '<span class="px-2.5 py-0.5 rounded-full bg-rose-600 text-white text-[11px] font-extrabold animate-pulse">UNO!</span>'
+        : '';
+
+      // Mini card backs visualization (up to 14 cards in a neat fan for 1v1)
+      const shownBacks = Math.min(opp.hand.length, 14);
+      let miniCards = '';
+      for (let i = 0; i < shownBacks; i++) {
+        miniCards += `<div class="w-5 h-8 sm:w-6 sm:h-9 rounded-md bg-gradient-to-br from-sky-500 to-blue-700 border border-white -ml-2 first:ml-0 shadow-xs"></div>`;
+      }
+
+      container.innerHTML = `
+        <div class="w-full max-w-xl rounded-2xl border px-4 py-2.5 sm:py-3 transition-all ${activeRing} flex flex-col sm:flex-row items-center justify-between gap-2.5">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-sky-50 border border-sky-200 flex items-center justify-center text-2xl shrink-0">
+              ${opp.avatar}
+            </div>
+            <div class="truncate">
+              <div class="flex items-center gap-2">
+                <span class="font-display font-bold text-sm sm:text-base text-slate-900 truncate">${opp.name}</span>
+                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                  ${opp.id === 'ai_teacher' ? 'Profi' : '4. Klasse'}
+                </span>
+              </div>
+              <div class="text-[11px] text-slate-500">${isTurn ? '⏳ überlegt & löst Probe-Frage...' : 'wartet auf deinen Zug'}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <div class="flex items-center justify-center">
+              ${miniCards || '<span class="text-xs text-emerald-600 font-bold">Fertig!</span>'}
+            </div>
+            <div class="flex items-center gap-1.5">
+              ${unoWarn}
+              <span class="px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-xs font-extrabold text-amber-800">
+                ${opp.hand.length} Karten
+              </span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCenterArena() {
+      const topCard = getTopDiscard();
+      const discardSlot = document.getElementById('discardPileSlot');
+      if (topCard) {
+        discardSlot.innerHTML = createCardHTML(topCard, false, 'large');
+      }
+
+      const cat = CATEGORIES[state.activeColor];
+      document.getElementById('discardCategoryLabel').innerHTML =
+        `${cat.icon} Thema: <span class="underline ${cat.textClass}">${cat.name} (${cat.label})</span>`;
+
+      // Active color pill in header
+      const badge = document.getElementById('activeColorBadge');
+      badge.className = `px-3 py-1.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-xs border border-black/10 flex items-center gap-1.5 ${cat.badgeBg}`;
+      document.getElementById('activeColorText').textContent = `${cat.name}: ${cat.label}`;
+
+      // Direction indicator
+      document.getElementById('directionIndicator').textContent = state.direction === 1 ? '↻' : '↺';
+
+      // Stack penalty box
+      const stackBox = document.getElementById('stackPenaltyBox');
+      if (state.pendingDrawStack > 0) {
+        stackBox.classList.remove('hidden');
+        document.getElementById('stackPenaltyCount').textContent = `+${state.pendingDrawStack}`;
+      } else {
+        stackBox.classList.add('hidden');
+      }
+
+      // Turn Banner
+      const currentP = state.players[state.currentPlayerIndex];
+      const turnText = document.getElementById('turnText');
+      const subTurnText = document.getElementById('subTurnText');
+      const turnBanner = document.getElementById('turnBanner');
+
+      if (state.gameOver) {
+        turnText.textContent = '🎉 Spiel beendet!';
+        subTurnText.textContent = 'Schau dir deine Probe-Auswertung an!';
+        turnBanner.className = 'mb-3 px-4 py-2.5 rounded-2xl bg-emerald-50 border-2 border-emerald-400 shadow-md text-center max-w-lg w-full';
+      } else if (currentP?.isHuman) {
+        turnText.textContent = '⭐ Du bist am Zug!';
+        if (state.pendingDrawStack > 0) {
+          subTurnText.textContent = `Achtung! Kontere mit ${state.pendingDrawType} oder klicke auf den Ziehstapel (+${state.pendingDrawStack} Karten)!`;
+          turnBanner.className = 'mb-3 px-4 py-2.5 rounded-2xl bg-rose-50 border-2 border-rose-400 shadow-md text-center max-w-lg w-full';
+        } else {
+          subTurnText.textContent = `Lege eine Karte in ${cat.name} (${cat.label}) oder mit gleichem Zeichen.`;
+          turnBanner.className = 'mb-3 px-4 py-2.5 rounded-2xl bg-white border-2 border-amber-400 shadow-md text-center max-w-lg w-full';
+        }
+      } else if (currentP) {
+        turnText.textContent = `${currentP.avatar} ${currentP.name} ist am Zug...`;
+        subTurnText.textContent = 'Gegner überlegt und beantwortet seine Probe-Frage.';
+        turnBanner.className = 'mb-3 px-4 py-2.5 rounded-2xl bg-white/90 border border-slate-200 shadow-sm text-center max-w-lg w-full';
+      }
+
+      // UNO button highlight when player has 1 or 2 cards
+      const human = state.players[0];
+      const unoBtn = document.getElementById('btnUnoShout');
+      if (human && human.hand.length <= 2 && !human.saidUno) {
+        unoBtn.classList.add('animate-pulse-glow');
+      } else {
+        unoBtn.classList.remove('animate-pulse-glow');
+      }
+      document.getElementById('unoStatusHint').textContent = human?.saidUno ? 'GERUFEN ✓' : 'Rufen!';
+    }
+
+    function renderPlayerHand() {
+      const human = state.players[0];
+      if (!human) return;
+
+      document.getElementById('playerCardCount').textContent = `${human.hand.length} Karten`;
+      const container = document.getElementById('playerHandContainer');
+      const isHumanTurn = state.players[state.currentPlayerIndex]?.isHuman && !state.gameOver && !state.isBusy;
+
+      container.innerHTML = human.hand.map(card => {
+        const canPlay = isHumanTurn && isCardPlayable(card);
+        return createCardHTML(card, canPlay, 'normal');
+      }).join('');
+
+      // Attach click events to playable cards
+      container.querySelectorAll('.uno-card').forEach(el => {
+        el.addEventListener('click', () => {
+          const cardId = Number(el.getAttribute('data-card-id'));
+          handleHumanCardClick(cardId);
+        });
+      });
+    }
+
+    function updateDeckBadge() {
+      document.getElementById('drawCountBadge').textContent = state.deck.length;
+    }
+
+    function updateHeaderStats() {
+      document.getElementById('statCorrect').textContent = state.stats.correct;
+      document.getElementById('statTotal').textContent = state.stats.total;
+    }
+
+    function logEvent(msg) {
+      document.getElementById('logStrip').textContent = msg;
+    }
+
+    function showToast(msg, duration = 2600) {
+      const container = document.getElementById('toastContainer');
+      const el = document.createElement('div');
+      el.className = 'px-4 py-2 rounded-2xl bg-white text-slate-900 border-2 border-amber-400 shadow-xl text-xs sm:text-sm font-bold animate-pop';
+      el.textContent = msg;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => el.remove(), 260);
+      }, duration);
+    }
+
+    // --- 7. QUESTION ENGINE (SELECT, DISPLAY & EVALUATE) ---
+    function pickQuestionForColor(colorKey) {
+      const targetColor = colorKey === 'wild'
+        ? ['red', 'blue', 'green', 'yellow'][Math.floor(Math.random() * 4)]
+        : colorKey;
+
+      let pool = QUESTION_BANK.filter(q => q.color === targetColor && !state.usedQuestionIds.has(q.id));
+      if (pool.length === 0) {
+        // Reset used questions for this color so game never runs out of questions!
+        QUESTION_BANK.filter(q => q.color === targetColor).forEach(q => state.usedQuestionIds.delete(q.id));
+        pool = QUESTION_BANK.filter(q => q.color === targetColor);
+      }
+      const chosen = pool[Math.floor(Math.random() * pool.length)];
+      state.usedQuestionIds.add(chosen.id);
+      return chosen;
+    }
+
+    function openQuestionChallenge({ color, purposeLabel, onSuccess, onFailure }) {
+      state.isBusy = true;
+      const question = pickQuestionForColor(color);
+      const cat = CATEGORIES[question.color];
+
+      const modal = document.getElementById('questionModal');
+      const header = document.getElementById('qModalHeader');
+      header.className = `px-5 py-3.5 bg-gradient-to-r ${cat.headerGrad} flex items-center justify-between border-b border-white/15`;
+
+      document.getElementById('qCategoryIcon').textContent = cat.icon;
+      document.getElementById('qCategoryBadge').textContent = `${cat.name} • ${cat.label}`;
+      document.getElementById('qSubtopicBadge').textContent = question.subtopic;
+      document.getElementById('qPurposeBadge').textContent = purposeLabel;
+
+      // Reading passage if available
+      const readingBox = document.getElementById('qReadingBox');
+      if (question.reading) {
+        readingBox.classList.remove('hidden');
+        document.getElementById('qReadingText').textContent = question.reading;
+      } else {
+        readingBox.classList.add('hidden');
+      }
+
+      document.getElementById('qPromptText').textContent = question.prompt;
+      const hintEl = document.getElementById('qHintText');
+      if (question.type === 'word_click') {
+        hintEl.classList.remove('hidden');
+        hintEl.textContent = '👆 Tipp: Klicke direkt auf das gesuchte Wort im Satz!';
+      } else {
+        hintEl.classList.add('hidden');
+      }
+
+      const optionsContainer = document.getElementById('qOptionsContainer');
+      const feedbackBox = document.getElementById('qFeedbackBox');
+      feedbackBox.classList.add('hidden');
+      optionsContainer.innerHTML = '';
+
+      let answered = false;
+
+      function handleAnswerSubmission(isCorrect, chosenText, correctText) {
+        if (answered) return;
+        answered = true;
+
+        // Record Probe stats
+        state.stats.total++;
+        state.stats.byCategory[question.color].total++;
+        if (isCorrect) {
+          state.stats.correct++;
+          state.stats.byCategory[question.color].correct++;
+          SoundFX.correct();
+        } else {
+          SoundFX.wrong();
+          state.stats.mistakes.push({
+            category: `${cat.name} (${cat.label})`,
+            subtopic: question.subtopic,
+            prompt: question.prompt,
+            chosen: chosenText,
+            correct: correctText,
+            explanation: question.explanation
+          });
+        }
+        updateHeaderStats();
+
+        // Show feedback
+        feedbackBox.classList.remove('hidden');
+        if (isCorrect) {
+          feedbackBox.className = 'rounded-2xl p-4 border border-emerald-300 bg-emerald-50 text-emerald-950 animate-pop';
+          document.getElementById('qFeedbackIcon').textContent = '🌟';
+          document.getElementById('qFeedbackTitle').textContent = 'Super gemacht! Richtig gelöst!';
+          document.getElementById('qFeedbackTitle').className = 'font-display font-bold text-base text-emerald-800';
+        } else {
+          feedbackBox.className = 'rounded-2xl p-4 border border-rose-300 bg-rose-50 text-rose-950 animate-pop';
+          document.getElementById('qFeedbackIcon').textContent = '💡';
+          document.getElementById('qFeedbackTitle').textContent = 'Leider falsch – merk dir die Regel für die Probe!';
+          document.getElementById('qFeedbackTitle').className = 'font-display font-bold text-base text-rose-800';
+        }
+        document.getElementById('qFeedbackExplanation').textContent = question.explanation;
+
+        document.getElementById('btnContinueAfterQ').onclick = () => {
+          modal.classList.add('hidden');
+          state.isBusy = false;
+          if (isCorrect) {
+            onSuccess();
+          } else {
+            onFailure();
+          }
+        };
+      }
+
+      if (question.type === 'mc') {
+        // Shuffle display order while preserving correct answer tracking
+        const indexedOptions = question.options.map((opt, idx) => ({
+          text: opt,
+          isCorrect: idx === question.answer
+        }));
+        const shuffledOptions = shuffle(indexedOptions);
+        const correctOptText = question.options[question.answer];
+
+        shuffledOptions.forEach((optObj, i) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'w-full text-left px-4 py-3.5 rounded-2xl bg-slate-50 hover:bg-sky-50 border border-slate-200 hover:border-sky-300 text-sm sm:text-base font-medium text-slate-800 transition flex items-center gap-3 shadow-2xs';
+          const letter = ['A', 'B', 'C', 'D'][i];
+          btn.innerHTML = `
+            <span class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center font-bold text-xs text-sky-700 shrink-0 shadow-2xs">${letter}</span>
+            <span>${optObj.text}</span>
+          `;
+          btn.addEventListener('click', () => {
+            if (answered) return;
+            // Highlight buttons
+            Array.from(optionsContainer.children).forEach((child, cIdx) => {
+              child.disabled = true;
+              const childOpt = shuffledOptions[cIdx];
+              if (childOpt.isCorrect) {
+                child.className = 'w-full text-left px-4 py-3.5 rounded-2xl bg-emerald-100 border-2 border-emerald-500 text-sm sm:text-base font-bold text-emerald-950 flex items-center gap-3';
+              } else if (child === btn && !optObj.isCorrect) {
+                child.className = 'w-full text-left px-4 py-3.5 rounded-2xl bg-rose-100 border-2 border-rose-500 text-sm sm:text-base font-bold text-rose-950 flex items-center gap-3';
+              } else {
+                child.classList.add('opacity-50');
+              }
+            });
+            handleAnswerSubmission(optObj.isCorrect, optObj.text, correctOptText);
+          });
+          optionsContainer.appendChild(btn);
+        });
+      } else if (question.type === 'word_click') {
+        // Interactive sentence word tokens
+        const box = document.createElement('div');
+        box.className = 'p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap gap-2 items-center justify-center';
+        const rawTokens = question.sentence.split(' ');
+
+        rawTokens.forEach(token => {
+          const cleanWord = token.replace(/[.,!?;:„“"']/g, '');
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = token;
+          btn.className = 'px-3 py-2 rounded-xl bg-white hover:bg-amber-50 border border-slate-300 hover:border-amber-400 text-base sm:text-lg font-bold text-slate-900 shadow-2xs transition transform hover:scale-105';
+
+          btn.addEventListener('click', () => {
+            if (answered) return;
+            const isRight = cleanWord === question.targetWord;
+            Array.from(box.children).forEach(wBtn => {
+              wBtn.disabled = true;
+              const wClean = wBtn.textContent.replace(/[.,!?;:„“"']/g, '');
+              if (wClean === question.targetWord) {
+                wBtn.className = 'px-3 py-2 rounded-xl bg-emerald-500 text-white border-2 border-emerald-700 text-base sm:text-lg font-extrabold scale-105';
+              } else if (wBtn === btn && !isRight) {
+                wBtn.className = 'px-3 py-2 rounded-xl bg-rose-600 text-white border-2 border-rose-800 text-base sm:text-lg font-extrabold';
+              } else {
+                wBtn.classList.add('opacity-45');
+              }
+            });
+            handleAnswerSubmission(isRight, cleanWord, question.targetWord);
+          });
+          box.appendChild(btn);
+        });
+        optionsContainer.appendChild(box);
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    // --- 8. TURN & ACTION EXECUTION ---
+    function getNextPlayerIndex(step = 1) {
+      const len = state.players.length;
+      return (state.currentPlayerIndex + step * state.direction + len * 10) % len;
+    }
+
+    function advanceTurn(skipNext = false) {
+      if (state.gameOver) return;
+      const step = skipNext ? 2 : 1;
+      state.currentPlayerIndex = getNextPlayerIndex(step);
+      renderAll();
+
+      const nextPlayer = state.players[state.currentPlayerIndex];
+      if (!nextPlayer.isHuman) {
+        setTimeout(() => runAITurn(nextPlayer), 950);
+      }
+    }
+
+    function checkUnoPenaltyBeforePlay(player) {
+      // If player had 2 cards and is about to play down to 1 card without pressing UNO
+      if (player.hand.length === 2 && !player.saidUno) {
+        if (player.isHuman) {
+          showToast('😱 UNO vergessen! Du musst 2 Strafkarten ziehen!');
+          SoundFX.wrong();
+          player.hand.push(...drawFromDeck(2));
+          logEvent('Du hast vergessen „UNO!“ zu drücken (+2 Strafkarten).');
+        }
+      }
+      if (player.hand.length !== 2) {
+        player.saidUno = false;
+      }
+    }
+
+    function checkWinCondition(player) {
+      if (player.hand.length === 0) {
+        state.gameOver = true;
+        SoundFX.win();
+        renderAll();
+        setTimeout(() => openProbeReport(true, player), 650);
+        return true;
+      }
+      return false;
+    }
+
+    function handleHumanCardClick(cardId) {
+      if (state.isBusy || state.gameOver) return;
+      const currentP = state.players[state.currentPlayerIndex];
+      if (!currentP.isHuman) return;
+
+      const cardIndex = currentP.hand.findIndex(c => c.id === cardId);
+      if (cardIndex === -1) return;
+      const card = currentP.hand[cardIndex];
+
+      if (!isCardPlayable(card)) {
+        showToast('Diese Karte passt gerade nicht zu Farbe oder Symbol!');
+        return;
+      }
+
+      const isCountering = state.pendingDrawStack > 0;
+      const purposeText = isCountering
+        ? `Strafe (+${state.pendingDrawStack}) kontern!`
+        : `${getCardLabelDE(card)} ausspielen`;
+
+      openQuestionChallenge({
+        color: card.color,
+        purposeLabel: purposeText,
+        onSuccess: () => {
+          // Check UNO rule before removing card
+          checkUnoPenaltyBeforePlay(currentP);
+
+          // Remove card from hand & place on discard
+          const idx = currentP.hand.findIndex(c => c.id === card.id);
+          if (idx !== -1) currentP.hand.splice(idx, 1);
+          state.discardPile.push(card);
+          SoundFX.card();
+
+          if (checkWinCondition(currentP)) return;
+
+          // Handle Wild Color Choice or Swap Target Choice for Human
+          if (card.color === 'wild') {
+            promptHumanColorChoice(chosenColor => {
+              state.activeColor = chosenColor;
+              applyCardEffectAndAdvance(currentP, card);
+            });
+          } else {
+            state.activeColor = card.color;
+            if (card.type === 'swap') {
+              const opponent = state.players.find(p => !p.isHuman);
+              swapHands(currentP, opponent);
+              showToast(`⇄ Du hast deine Karten mit ${opponent.name} getauscht!`);
+              logEvent(`Du hast deine Handkarten direkt mit ${opponent.name} getauscht!`);
+              advanceTurn(false);
+            } else {
+              applyCardEffectAndAdvance(currentP, card);
+            }
+          }
+        },
+        onFailure: () => {
+          // Card stays in hand + 1 penalty card drawn!
+          const penalty = drawFromDeck(1);
+          currentP.hand.push(...penalty);
+          currentP.saidUno = false;
+
+          // If human failed while trying to counter a +2/+4 stack, they also suffer the stack!
+          if (state.pendingDrawStack > 0) {
+            const stackCards = drawFromDeck(state.pendingDrawStack);
+            currentP.hand.push(...stackCards);
+            logEvent(`Falsch beantwortet! Du ziehst 1 Strafkarte + ${state.pendingDrawStack} vom Straf-Stapel.`);
+            state.pendingDrawStack = 0;
+            state.pendingDrawType = null;
+          } else {
+            logEvent('Falsch beantwortet! Die Karte bleibt auf deiner Hand + 1 Strafkarte.');
+          }
+          advanceTurn(false);
+        }
+      });
+    }
+
+    function applyCardEffectAndAdvance(player, card) {
+      let skipNext = false;
+
+      if (card.type === 'draw2') {
+        state.pendingDrawStack += 2;
+        state.pendingDrawType = '+2';
+        logEvent(`${player.name} spielt +2! Straf-Stapel steht bei +${state.pendingDrawStack}.`);
+      } else if (card.type === 'wild4') {
+        state.pendingDrawStack += 4;
+        state.pendingDrawType = '+4';
+        logEvent(`${player.name} spielt Große Probe +4! Straf-Stapel: +${state.pendingDrawStack} (Thema: ${CATEGORIES[state.activeColor].name}).`);
+      } else if (card.type === 'skip') {
+        skipNext = true;
+        const skipped = state.players[getNextPlayerIndex(1)];
+        logEvent(`${player.name} spielt Pause (⊘)! ${skipped.name} setzt aus – ${player.name} ist noch einmal dran!`);
+      } else if (card.type === 'reverse') {
+        if (state.players.length === 2) {
+          skipNext = true;
+          const skipped = state.players[getNextPlayerIndex(1)];
+          logEvent(`${player.name} spielt Richtungswechsel (⇄)! Im 1-gegen-1 setzt ${skipped.name} aus!`);
+        } else {
+          state.direction *= -1;
+          logEvent(`${player.name} wechselt die Spielrichtung!`);
+        }
+      } else {
+        logEvent(`${player.name} legt ${getCardLabelDE(card)}.`);
+      }
+
+      advanceTurn(skipNext);
+    }
+
+    function handleHumanDrawAction() {
+      if (state.isBusy || state.gameOver) return;
+      const currentP = state.players[state.currentPlayerIndex];
+      if (!currentP.isHuman) return;
+
+      // If there's an active +2 / +4 stack and player clicks draw pile, they absorb the stack
+      if (state.pendingDrawStack > 0) {
+        const count = state.pendingDrawStack;
+        currentP.hand.push(...drawFromDeck(count));
+        currentP.saidUno = false;
+        SoundFX.card();
+        showToast(`Du ziehst ${count} Strafkarten!`);
+        logEvent(`Du hast ${count} Karten vom Straf-Stapel gezogen.`);
+        state.pendingDrawStack = 0;
+        state.pendingDrawType = null;
+        advanceTurn(false);
+        return;
+      }
+
+      // Normal draw: draw 1 card, and if it is playable, offer to play it right away!
+      const [drawnCard] = drawFromDeck(1);
+      if (!drawnCard) return;
+      currentP.hand.push(drawnCard);
+      currentP.saidUno = false;
+      SoundFX.card();
+      renderAll();
+
+      if (isCardPlayable(drawnCard)) {
+        showToast(`Gezogene Karte (${getCardLabelDE(drawnCard)}) passt! Du kannst sie direkt spielen oder passen.`);
+        logEvent(`Du hast ${getCardLabelDE(drawnCard)} gezogen – sie passt!`);
+        // Allow player to click the newly drawn card or click draw again?
+        // To keep flow smooth and clear, we let them click the playable card in hand, or pass via button:
+        const drawBtn = document.getElementById('btnDrawCardAction');
+        drawBtn.textContent = 'Zug beenden ➔';
+        drawBtn.onclick = () => {
+          resetDrawButton();
+          logEvent('Du hast gezogen und deinen Zug beendet.');
+          advanceTurn(false);
+        };
+      } else {
+        showToast(`Gezogen: ${getCardLabelDE(drawnCard)} (passt leider nicht).`);
+        logEvent(`Du hast 1 Karte gezogen (${getCardLabelDE(drawnCard)}).`);
+        setTimeout(() => advanceTurn(false), 750);
+      }
+    }
+
+    function resetDrawButton() {
+      const drawBtn = document.getElementById('btnDrawCardAction');
+      drawBtn.textContent = '+ Karte ziehen';
+      drawBtn.onclick = handleHumanDrawAction;
+    }
+
+    function promptHumanColorChoice(callback) {
+      const modal = document.getElementById('colorPickerModal');
+      modal.classList.remove('hidden');
+      modal.querySelectorAll('[data-pick-color]').forEach(btn => {
+        btn.onclick = () => {
+          const color = btn.getAttribute('data-pick-color');
+          modal.classList.add('hidden');
+          callback(color);
+        };
+      });
+    }
+
+    function promptHumanSwapTarget(callback) {
+      const modal = document.getElementById('swapTargetModal');
+      const list = document.getElementById('swapTargetsList');
+      const opponents = state.players.filter(p => !p.isHuman);
+
+      list.innerHTML = opponents.map(opp => `
+        <button type="button" data-swap-id="${opp.id}" class="w-full p-3.5 rounded-2xl bg-slate-50 hover:bg-sky-50 border border-slate-200 hover:border-sky-300 flex items-center justify-between text-slate-900 transition">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">${opp.avatar}</span>
+            <span class="font-display font-bold text-base">${opp.name}</span>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold">
+            ${opp.hand.length} Karten
+          </span>
+        </button>
+      `).join('');
+
+      modal.classList.remove('hidden');
+      list.querySelectorAll('[data-swap-id]').forEach(btn => {
+        btn.onclick = () => {
+          const targetId = btn.getAttribute('data-swap-id');
+          const target = state.players.find(p => p.id === targetId);
+          modal.classList.add('hidden');
+          callback(target);
+        };
+      });
+    }
+
+    function swapHands(playerA, playerB) {
+      const temp = playerA.hand;
+      playerA.hand = playerB.hand;
+      playerB.hand = temp;
+      playerA.saidUno = playerA.hand.length === 1;
+      playerB.saidUno = playerB.hand.length === 1;
+      SoundFX.uno();
+    }
+
+    // --- 9. STRATEGIC AI OPPONENT LOGIC ---
+    function runAITurn(aiPlayer) {
+      if (state.gameOver) return;
+      resetDrawButton();
+
+      const playableCards = aiPlayer.hand.filter(isCardPlayable);
+
+      // If no playable cards
+      if (playableCards.length === 0) {
+        if (state.pendingDrawStack > 0) {
+          const penalty = state.pendingDrawStack;
+          aiPlayer.hand.push(...drawFromDeck(penalty));
+          SoundFX.card();
+          logEvent(`${aiPlayer.avatar} ${aiPlayer.name} kann nicht kontern und zieht ${penalty} Karten!`);
+          state.pendingDrawStack = 0;
+          state.pendingDrawType = null;
+          advanceTurn(false);
+          return;
+        }
+
+        // Draw 1 card
+        const [drawn] = drawFromDeck(1);
+        if (drawn) {
+          aiPlayer.hand.push(drawn);
+          SoundFX.card();
+          if (isCardPlayable(drawn) && Math.random() < 0.78) {
+            // AI plays drawn card
+            setTimeout(() => executeAICardPlay(aiPlayer, drawn), 600);
+            return;
+          }
+        }
+        logEvent(`${aiPlayer.avatar} ${aiPlayer.name} zieht 1 Karte.`);
+        advanceTurn(false);
+        return;
+      }
+
+      // AI picks best card strategically:
+      // Prefer action/number cards matching active color, save wild4 for emergencies or when next player has few cards
+      const nextP = state.players[getNextPlayerIndex(1)];
+      let chosenCard = playableCards[0];
+
+      if (nextP && nextP.hand.length <= 2) {
+        // Try to slow down a player close to winning!
+        const attackCard = playableCards.find(c => ['draw2', 'skip', 'reverse', 'swap', 'wild4'].includes(c.type));
+        if (attackCard) chosenCard = attackCard;
+      } else {
+        const nonWild = playableCards.filter(c => c.color !== 'wild');
+        if (nonWild.length > 0) {
+          // Avoid swapping away a small hand!
+          const safeCards = aiPlayer.hand.length <= 3
+            ? nonWild.filter(c => c.type !== 'swap')
+            : nonWild;
+          const pool = safeCards.length > 0 ? safeCards : nonWild;
+          chosenCard = pool[Math.floor(Math.random() * pool.length)];
+        }
+      }
+
+      executeAICardPlay(aiPlayer, chosenCard);
+    }
+
+    function executeAICardPlay(aiPlayer, card) {
+      if (state.gameOver) return;
+
+      // AI also has a realistic chance (approx. 16%, lower for "Herr Müller") to miss a tricky question!
+      const successRate = aiPlayer.id === 'ai_teacher' ? 0.92 : 0.82;
+      const aiAnsweredRight = Math.random() < successRate;
+
+      if (!aiAnsweredRight) {
+        aiPlayer.hand.push(...drawFromDeck(1));
+        if (state.pendingDrawStack > 0) {
+          aiPlayer.hand.push(...drawFromDeck(state.pendingDrawStack));
+          logEvent(`${aiPlayer.avatar} ${aiPlayer.name} hat sich bei der Probe-Frage vertan und zieht ${state.pendingDrawStack + 1} Karten!`);
+          state.pendingDrawStack = 0;
+          state.pendingDrawType = null;
+        } else {
+          logEvent(`${aiPlayer.avatar} ${aiPlayer.name} wusste die Deutsch-Frage nicht und zieht 1 Strafkarte!`);
+        }
+        advanceTurn(false);
+        return;
+      }
+
+      // Remove card
+      const idx = aiPlayer.hand.findIndex(c => c.id === card.id);
+      if (idx !== -1) aiPlayer.hand.splice(idx, 1);
+      state.discardPile.push(card);
+      SoundFX.card();
+
+      if (aiPlayer.hand.length === 1) {
+        aiPlayer.saidUno = true;
+        SoundFX.uno();
+        showToast(`📣 ${aiPlayer.name} ruft: „UNO!“`);
+      }
+
+      if (checkWinCondition(aiPlayer)) return;
+
+      // AI picks color it holds most of
+      if (card.color === 'wild') {
+        const counts = { red: 0, blue: 0, green: 0, yellow: 0 };
+        aiPlayer.hand.forEach(c => { if (counts[c.color] !== undefined) counts[c.color]++; });
+        const bestColor = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+        state.activeColor = bestColor;
+      } else {
+        state.activeColor = card.color;
+      }
+
+      if (card.type === 'swap') {
+        // Swap with player who has fewest cards
+        const targets = state.players.filter(p => p.id !== aiPlayer.id);
+        targets.sort((a, b) => a.hand.length - b.hand.length);
+        const target = targets[0];
+        swapHands(aiPlayer, target);
+        logEvent(`${aiPlayer.avatar} ${aiPlayer.name} spielt Karten-Tausch und tauscht mit ${target.name}!`);
+        advanceTurn(false);
+        return;
+      }
+
+      applyCardEffectAndAdvance(aiPlayer, card);
+    }
+
+    // --- 10. PROBE REPORT / BAVARIAN GRADE CALCULATION ---
+    function calculateBavarianGrade(percent) {
+      if (percent >= 92) return { grade: '1', text: 'Sehr gut! Du bist top vorbereitet für die Probe!', color: 'text-emerald-600' };
+      if (percent >= 80) return { grade: '2', text: 'Gut gemacht! Nur noch kleine Details wiederholen.', color: 'text-green-600' };
+      if (percent >= 66) return { grade: '3', text: 'Befriedigend! Schau dir deine Fehlerkarten unten genau an.', color: 'text-amber-600' };
+      if (percent >= 50) return { grade: '4', text: 'Ausreichend – übe noch eine Runde vor der Probe!', color: 'text-orange-600' };
+      return { grade: '5', text: 'Noch fleißig üben – lies die Erklärungen gut durch!', color: 'text-rose-600' };
+    }
+
+    function openProbeReport(isFinal = false, winner = null) {
+      const modal = document.getElementById('reportModal');
+      const total = state.stats.total;
+      const correct = state.stats.correct;
+      const pct = total === 0 ? 100 : Math.round((correct / total) * 100);
+      const gradeObj = calculateBavarianGrade(pct);
+
+      document.getElementById('reportMainTitle').textContent = isFinal
+        ? '🏆 Spielende & Probe-Zeugnis'
+        : '🎓 Aktueller Probe-Stand';
+
+      if (isFinal && winner) {
+        document.getElementById('reportWinnerText').textContent = winner.isHuman
+          ? '🎉 Herzlichen Glückwunsch! Du hast das Deutsch-UNO gewonnen!'
+          : `${winner.avatar} ${winner.name} hat diese Runde gewonnen!`;
+      } else {
+        document.getElementById('reportWinnerText').textContent = `${correct} von ${total} Probe-Fragen richtig gelöst`;
+      }
+
+      document.getElementById('reportSummaryText').textContent = total === 0
+        ? 'Spiele deine erste Karte, um Probe-Fragen zu lösen.'
+        : gradeObj.text;
+
+      const gradeBadge = document.getElementById('reportGradeBadge');
+      gradeBadge.textContent = total === 0 ? '–' : gradeObj.grade;
+      gradeBadge.className = `font-display font-bold text-3xl ${gradeObj.color}`;
+      document.getElementById('reportPercentText').textContent = total === 0 ? 'Noch keine Fragen' : `${pct}% richtig (${correct}/${total})`;
+
+      // Category breakdown
+      const catGrid = document.getElementById('reportCategoriesGrid');
+      catGrid.innerHTML = Object.entries(CATEGORIES).map(([key, info]) => {
+        const cStat = state.stats.byCategory[key];
+        const cPct = cStat.total === 0 ? 0 : Math.round((cStat.correct / cStat.total) * 100);
+        return `
+          <div class="p-3 rounded-2xl bg-slate-50 border ${info.borderClass}">
+            <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+              <span class="${info.textClass}">${info.icon} ${info.name}: ${info.label}</span>
+              <span class="text-slate-900">${cStat.correct}/${cStat.total} (${cStat.total === 0 ? '–' : cPct + '%'})</span>
+            </div>
+            <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+              <div class="h-full ${info.badgeBg.split(' ')[0]} transition-all" style="width: ${cPct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Mistakes list
+      const mistakesList = document.getElementById('reportMistakesList');
+      if (state.stats.mistakes.length === 0) {
+        mistakesList.innerHTML = `
+          <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 text-center font-medium">
+            🌟 Bisher fehlerfrei! Keine falschen Antworten auf deinem Merkzettel.
+          </div>
+        `;
+      } else {
+        mistakesList.innerHTML = state.stats.mistakes.map(m => `
+          <div class="p-3 rounded-2xl bg-rose-50/70 border border-rose-200 text-xs space-y-1">
+            <div class="font-bold text-amber-800">${m.category} • ${m.subtopic}</div>
+            <div class="text-slate-900 font-semibold">${m.prompt}</div>
+            <div class="flex flex-wrap gap-3 pt-0.5">
+              <span class="text-rose-700">✗ Deine Antwort: <strong>${m.chosen}</strong></span>
+              <span class="text-emerald-700">✓ Richtig: <strong>${m.correct}</strong></span>
+            </div>
+            <p class="text-slate-700 pt-0.5 leading-relaxed">💡 ${m.explanation}</p>
+          </div>
+        `).join('');
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    // --- 11. GAME INITIALIZATION & EVENT LISTENERS ---
+    function startNewGame() {
+      state.deck = createDeck();
+      state.discardPile = [];
+      state.direction = 1;
+      state.currentPlayerIndex = 0;
+      state.pendingDrawStack = 0;
+      state.pendingDrawType = null;
+      state.isBusy = false;
+      state.gameOver = false;
+      state.usedQuestionIds.clear();
+      state.stats = {
+        total: 0,
+        correct: 0,
+        byCategory: {
+          red: { total: 0, correct: 0 },
+          blue: { total: 0, correct: 0 },
+          green: { total: 0, correct: 0 },
+          yellow: { total: 0, correct: 0 }
+        },
+        mistakes: []
+      };
+
+      const aiOptions = {
+        ai_lena: { id: 'ai_lena', name: 'Lena', avatar: '👧', isHuman: false, hand: [], saidUno: false },
+        ai_teacher: { id: 'ai_teacher', name: 'Herr Müller', avatar: '👨‍🏫', isHuman: false, hand: [], saidUno: false }
+      };
+      const chosenOpponent = aiOptions[state.selectedOpponentId] || aiOptions.ai_lena;
+
+      state.players = [
+        { id: 'human', name: 'Du', avatar: '🎒', isHuman: true, hand: [], saidUno: false },
+        chosenOpponent
+      ];
+
+      // Deal cards
+      state.players.forEach(p => {
+        p.hand = drawFromDeck(state.initialCards);
+      });
+
+      // Draw a valid starting number card
+      let firstCard = drawFromDeck(1)[0];
+      while (firstCard.color === 'wild' || firstCard.type !== 'number') {
+        state.deck.unshift(firstCard);
+        firstCard = drawFromDeck(1)[0];
+      }
+      state.discardPile.push(firstCard);
+      state.activeColor = firstCard.color;
+
+      document.getElementById('setupScreen').classList.add('hidden');
+      document.getElementById('gameBoard').classList.remove('hidden');
+      document.getElementById('headerStats').classList.remove('hidden');
+      document.getElementById('btnReport').classList.remove('hidden');
+      document.getElementById('reportModal').classList.add('hidden');
+
+      resetDrawButton();
+      logEvent(`Startkarte: ${getCardLabelDE(firstCard)}. Du beginnst!`);
+      renderAll();
+    }
+
+    // Setup screen selectors
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-btn').forEach(b => {
+          b.className = 'mode-btn w-full text-left px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 transition flex items-center justify-between';
+          b.querySelector('div > div:first-child').className = 'font-bold text-sm text-slate-800';
+          b.querySelector('div > div:last-child').className = 'text-[11px] text-slate-500';
+          b.querySelector('span').className = 'text-xs font-bold text-slate-500';
+        });
+        btn.className = 'mode-btn w-full text-left px-3.5 py-2.5 rounded-xl border-2 border-amber-500 bg-amber-50 transition flex items-center justify-between shadow-xs';
+        btn.querySelector('div > div:first-child').className = 'font-bold text-sm text-amber-900';
+        btn.querySelector('div > div:last-child').className = 'text-[11px] text-amber-800/80';
+        btn.querySelector('span').className = 'text-xs font-bold text-amber-700';
+        state.initialCards = Number(btn.getAttribute('data-cards'));
+      });
+    });
+
+    document.querySelectorAll('.opp-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.opp-btn').forEach(b => {
+          b.className = 'opp-btn px-3 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-center transition';
+          b.querySelector('div:nth-child(2)').className = 'font-bold text-sm text-slate-800';
+          b.querySelector('div:nth-child(3)').className = 'text-[11px] text-slate-500';
+        });
+        btn.className = 'opp-btn px-3 py-2.5 rounded-xl border-2 border-sky-500 bg-sky-50 text-center transition shadow-xs';
+        btn.querySelector('div:nth-child(2)').className = 'font-bold text-sm text-sky-900';
+        btn.querySelector('div:nth-child(3)').className = 'text-[11px] text-sky-700';
+        state.selectedOpponentId = btn.getAttribute('data-opponent-id');
+      });
+    });
+
+    document.getElementById('btnStartGame').addEventListener('click', () => {
+      SoundFX.card();
+      startNewGame();
+    });
+
+    document.getElementById('btnNewGame').addEventListener('click', () => {
+      document.getElementById('gameBoard').classList.add('hidden');
+      document.getElementById('headerStats').classList.add('hidden');
+      document.getElementById('btnReport').classList.add('hidden');
+      document.getElementById('setupScreen').classList.remove('hidden');
+    });
+
+    // Draw pile & Draw button
+    document.getElementById('drawPileBtn').addEventListener('click', handleHumanDrawAction);
+    document.getElementById('btnDrawCardAction').addEventListener('click', handleHumanDrawAction);
+
+    // Sort hand button
+    document.getElementById('btnSortHand').addEventListener('click', () => {
+      const human = state.players[0];
+      if (!human) return;
+      const order = { red: 1, blue: 2, green: 3, yellow: 4, wild: 5 };
+      human.hand.sort((a, b) => {
+        if (order[a.color] !== order[b.color]) return order[a.color] - order[b.color];
+        return a.value.localeCompare(b.value);
+      });
+      SoundFX.card();
+      renderPlayerHand();
+    });
+
+    // UNO Shout button
+    document.getElementById('btnUnoShout').addEventListener('click', () => {
+      const human = state.players[0];
+      if (!human || state.gameOver) return;
+      if (human.hand.length <= 2) {
+        human.saidUno = true;
+        SoundFX.uno();
+        showToast('📣 Du rufst laut: „UNO!“ – Sicher!');
+        renderCenterArena();
+      } else {
+        showToast('Du kannst „UNO!“ erst rufen, wenn du nur noch 1 oder 2 Karten hast!');
+      }
+    });
+
+    // Sound toggle
+    document.getElementById('btnSound').addEventListener('click', (e) => {
+      const on = SoundFX.toggle();
+      e.currentTarget.textContent = on ? '🔊' : '🔇';
+      showToast(on ? 'Ton eingeschaltet' : 'Ton stummgeschaltet', 1400);
+    });
+
+    // Rules modal
+    document.getElementById('btnRules').addEventListener('click', () => {
+      document.getElementById('rulesModal').classList.remove('hidden');
+    });
+    document.getElementById('closeRulesBtn').addEventListener('click', () => {
+      document.getElementById('rulesModal').classList.add('hidden');
+    });
+
+    // Report modal
+    document.getElementById('btnReport').addEventListener('click', () => openProbeReport(false));
+    document.getElementById('closeReportBtn').addEventListener('click', () => {
+      document.getElementById('reportModal').classList.add('hidden');
+    });
+    document.getElementById('btnReportContinue').addEventListener('click', () => {
+      document.getElementById('reportModal').classList.add('hidden');
+    });
+    document.getElementById('btnReportRestart').addEventListener('click', () => {
+      startNewGame();
+    });
+  </script>
+</body>
+</html>
